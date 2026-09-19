@@ -9,10 +9,10 @@ interface Props {
 const { current } = Astro.props;
 
 const items = [
-  { key: 'info', label: 'INFO', href: withBase('/'), accent: 'is-primary' },
+  { key: 'info', label: 'INFO', href: withBase('/'), accent: 'is-error' },
   { key: 'blog', label: 'BLOG', href: withBase('/blog'), accent: 'is-warning' },
   { key: 'career', label: 'CAREER', href: withBase('/career'), accent: 'is-success' },
-  { key: 'contact', label: 'CONTACT', href: withBase('/contact'), accent: 'is-error' },
+  { key: 'contact', label: 'CONTACT', href: withBase('/contact'), accent: 'is-primary' },
 ] as const;
 
 // Split either side of the face, the way Doom's status bar brackets it
