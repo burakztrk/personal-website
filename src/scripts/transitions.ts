@@ -10,6 +10,9 @@
 
 const ACCENTS = ['is-primary', 'is-warning', 'is-success', 'is-error'];
 
+/** Fired on document once a soft navigation has finished swapping the page. */
+export const SOFT_NAV_EVENT = 'soft-nav';
+
 function supportsViewTransitions(): boolean {
   return typeof document !== 'undefined' && 'startViewTransition' in document;
 }
@@ -110,6 +113,11 @@ async function performNavigation(url: string, direction: 'forward' | 'back'): Pr
   } else {
     applyContent();
   }
+
+  // Chrome outside <main> never gets re-rendered by a soft nav, so anything
+  // living there that wants to react to navigation (the header's Doom face)
+  // has no other signal that the page changed.
+  document.dispatchEvent(new CustomEvent(SOFT_NAV_EVENT));
 }
 
 function onClick(event: MouseEvent): void {
