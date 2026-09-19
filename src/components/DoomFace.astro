@@ -22,8 +22,8 @@ const ROWS = 6;
 
 <style>
   .doom-face {
-    width: 44px;
-    height: 44px;
+    width: 62px;
+    height: 62px;
     border: 3px solid var(--line);
     box-sizing: border-box;
     flex-shrink: 0;
@@ -35,6 +35,8 @@ const ROWS = 6;
 </style>
 
 <script>
+  import { SOFT_NAV_EVENT } from '../scripts/transitions';
+
   type Frame = [col: number, row: number];
   type Animation = { frames: Frame[]; ms: number };
 
@@ -65,44 +67,56 @@ const ROWS = 6;
       // Doom's idle look-around: glance one way, forward, the other way.
       () => {
         const t = tier();
-        return { frames: [[LEFT, t], [AHEAD, t], [RIGHT, t], [AHEAD, t]], ms: 430 };
+        return { frames: [[LEFT, t], [AHEAD, t], [RIGHT, t], [AHEAD, t]], ms: 515 };
       },
       // Rampage: the face you get for holding the trigger down.
       () => {
         const t = tier();
-        return { frames: [[RAGE, t], [SCREAM, t], [RAGE, t], [AHEAD, t]], ms: 170 };
+        return { frames: [[RAGE, t], [SCREAM, t], [RAGE, t], [AHEAD, t]], ms: 205 };
       },
       // Evil grin, as in "just picked up something with a lot of ammo".
       () => {
         const t = tier();
-        return { frames: [[GRIN, t], [SMILE, t], [GRIN, t], [AHEAD, t]], ms: 300 };
+        return { frames: [[GRIN, t], [SMILE, t], [GRIN, t], [AHEAD, t]], ms: 360 };
       },
       // Taking damage all the way down, then respawning at full health.
       () => ({
         frames: [[AHEAD, 0], [SCREAM, 1], [AHEAD, 2], [SCREAM, 3], [AHEAD, 4], DEAD, DEAD],
-        ms: 340,
+        ms: 410,
       }),
       // Invulnerability sphere: the eyes give it away.
-      () => ({ frames: [GOD, GOD, [AHEAD, 0], GOD], ms: 280 }),
+      () => ({ frames: [GOD, GOD, [AHEAD, 0], GOD], ms: 335 }),
     ];
 
     const show = ([col, row]: Frame) => {
       box.style.backgroundPosition = `${(col / (cols - 1)) * 100}% ${(row / (rows - 1)) * 100}%`;
     };
 
-    const animation = animations[Math.floor(Math.random() * animations.length)]();
+    const stillFrames = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let timer: ReturnType<typeof window.setTimeout> | undefined;
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      show(animation.frames[0]);
-    } else {
+    const play = () => {
+      window.clearTimeout(timer);
+      const animation = animations[Math.floor(Math.random() * animations.length)]();
+
+      if (stillFrames) {
+        show(animation.frames[0]);
+        return;
+      }
+
       let i = 0;
       const tick = () => {
         show(animation.frames[i % animation.frames.length]);
         i += 1;
         // A little jitter per frame so the loop doesn't read as metronomic.
-        window.setTimeout(tick, animation.ms + Math.random() * 90);
+        timer = window.setTimeout(tick, animation.ms + Math.random() * 110);
       };
       tick();
-    }
+    };
+
+    play();
+    // The header is never re-rendered by a soft navigation, so re-roll the
+    // face on every page change as well as on a full load.
+    document.addEventListener(SOFT_NAV_EVENT, play);
   }
 </script>

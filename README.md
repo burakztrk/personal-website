@@ -80,19 +80,16 @@ hand-rolled [View Transitions API](https://developer.chrome.com/docs/web-platfor
 controller in `src/scripts/transitions.ts` + `src/styles/transitions.css` —
 every page still works as a standalone full load (no JS required).
 
-The header's avatar slot (top right) shows a random image from
-`public/gifs/` if that folder has any `.gif`/`.webp`/`.png`/`.jpg` files in
-it, or the "GIF SOON" placeholder if it's empty — see
-`public/gifs/README.md`. Only add images you have the rights to use, since
-this repo is public.
-
-Next to it sits the Doom status face (`src/components/DoomFace.astro`). It is
-not a set of GIF files — it is a single 7x6 sprite sheet
-(`public/images/doom-face/burak-doom-faces.png`, rows 0-4 are Doom health
-tiers, row 5 holds the dead and godmode faces) that the component animates at
-runtime by stepping `background-position`. Each page load picks one of the
-canned animations (idle look-around, rampage, evil grin, death, godmode) and,
-for the tier-based ones, a random amount of damage.
+The header's avatar slot (top right) is the Doom status face
+(`src/components/DoomFace.astro`). It is not a set of GIF files — it is a
+single 7x6 sprite sheet (`public/images/doom-face/burak-doom-faces.png`, rows
+0-4 are Doom health tiers, row 5 holds the dead and godmode faces) that the
+component animates at runtime by stepping `background-position`. It picks one
+of the canned animations (idle look-around, rampage, evil grin, death,
+godmode) and, for the tier-based ones, a random amount of damage. That pick is
+re-rolled on a full page load and again on every soft navigation, which the
+transition controller announces via the `soft-nav` event — the header is
+outside `main`, so a page swap otherwise leaves it untouched.
 
 ## Deploy
 
