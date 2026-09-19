@@ -86,6 +86,14 @@ it, or the "GIF SOON" placeholder if it's empty — see
 `public/gifs/README.md`. Only add images you have the rights to use, since
 this repo is public.
 
+Next to it sits the Doom status face (`src/components/DoomFace.astro`). It is
+not a set of GIF files — it is a single 7x6 sprite sheet
+(`public/images/doom-face/burak-doom-faces.png`, rows 0-4 are Doom health
+tiers, row 5 holds the dead and godmode faces) that the component animates at
+runtime by stepping `background-position`. Each page load picks one of the
+canned animations (idle look-around, rampage, evil grin, death, godmode) and,
+for the tier-based ones, a random amount of damage.
+
 ## Deploy
 
 Not yet configured — to be decided (GitHub Pages vs. self-hosted).
