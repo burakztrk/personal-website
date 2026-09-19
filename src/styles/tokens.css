@@ -20,6 +20,11 @@
   --capsule-top: #f2f0e4;
   --capsule-base: #e05a47;
 
+  /* The dark well the Doom face is read against. Constant across themes for
+     the same reason the accents are: it is part of the sprite's own look,
+     not of the surrounding surface. */
+  --screen: #12141a;
+
   --font-display: 'Press Start 2P', monospace;
   --font-body: 'DotGothic16', monospace;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -43,4 +48,16 @@
   --ink: #12141a;
   --ink-dim: #5a626b;
   --line: #21252b;
+}
+
+/* Doom: the 1993 status bar's palette — gunmetal browns, bone text and a
+   rusted edge. Accents stay put for the reason above, which also keeps the
+   badges reading like HUD indicators. */
+:root[data-theme='doom'] {
+  --ground: #14100e;
+  --surface: #2a2421;
+  --raised: #3a312c;
+  --ink: #e8dcc6;
+  --ink-dim: #a08e76;
+  --line: #7a4a33;
 }

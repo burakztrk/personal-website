@@ -1,9 +1,12 @@
-export type Theme = 'dark' | 'light';
+export type Theme = 'dark' | 'light' | 'doom';
 
 const STORAGE_KEY = 'theme';
 
+/** Cycle order for the toggle button. */
+export const THEMES: Theme[] = ['dark', 'light', 'doom'];
+
 function isTheme(value: unknown): value is Theme {
-  return value === 'dark' || value === 'light';
+  return THEMES.includes(value as Theme);
 }
 
 export function getStoredTheme(): Theme | null {
@@ -22,7 +25,8 @@ export function getPreferredTheme(): Theme {
 }
 
 export function getCurrentTheme(): Theme {
-  return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+  const current = document.documentElement.dataset.theme;
+  return isTheme(current) ? current : 'dark';
 }
 
 export function applyTheme(theme: Theme): void {
@@ -38,8 +42,12 @@ export function setTheme(theme: Theme): void {
   }
 }
 
-export function toggleTheme(): Theme {
-  const next: Theme = getCurrentTheme() === 'dark' ? 'light' : 'dark';
+export function nextTheme(theme: Theme = getCurrentTheme()): Theme {
+  return THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
+}
+
+export function cycleTheme(): Theme {
+  const next = nextTheme();
   setTheme(next);
   return next;
 }

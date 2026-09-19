@@ -8,7 +8,8 @@
 // (direct URL, refresh, no-JS): this script only intercepts clicks to add
 // the animation on top of otherwise-real navigation, it never replaces it.
 
-const ACCENTS = ['is-primary', 'is-warning', 'is-success', 'is-error'];
+// Every tone a nav badge can wear: its accent when active, dark otherwise.
+const BADGE_TONES = ['is-primary', 'is-warning', 'is-success', 'is-error', 'is-dark'];
 
 /** Fired on document once a soft navigation has finished swapping the page. */
 export const SOFT_NAV_EVENT = 'soft-nav';
@@ -67,10 +68,16 @@ function updateNavActiveState(pathname: string): void {
   document.querySelectorAll<HTMLAnchorElement>('.nav-link').forEach((link) => {
     const href = link.getAttribute('href') ?? '';
     const active = href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`);
-    link.classList.remove(...ACCENTS);
+
+    // nes.css paints the badge's inner <span>, not the <a> — the accent has
+    // to land there or the active state silently stops updating.
+    const label = link.querySelector('span');
+    if (label) {
+      label.classList.remove(...BADGE_TONES);
+      label.classList.add((active && link.dataset.accent) || 'is-dark');
+    }
+
     if (active) {
-      const accent = link.dataset.accent;
-      if (accent) link.classList.add(accent);
       link.setAttribute('aria-current', 'page');
     } else {
       link.removeAttribute('aria-current');

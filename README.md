@@ -72,16 +72,21 @@ using a hypothetical `PROJECTS` page as the example:
 
 ## Design system
 
-Dark/light theme tokens live in `src/styles/tokens.css`; the theme toggle
-(top right of every page) flips `data-theme` on `<html>` and persists the
-choice in `localStorage`. Typography: `Press Start 2P` for UI chrome/headings,
+Theme tokens live in `src/styles/tokens.css`. The toggle (top right of every
+page) cycles `data-theme` on `<html>` through dark, light and doom, and
+persists the choice in `localStorage`. The accent tokens are deliberately
+identical in all three, since they have to stay equal to NES.css's own
+hardcoded `is-primary`/`is-success`/`is-warning`/`is-error` colors — a theme
+overrides the neutrals only. Typography: `Press Start 2P` for UI chrome/headings,
 `DotGothic16` for body copy. The page-to-page navigation animation is a
 hand-rolled [View Transitions API](https://developer.chrome.com/docs/web-platform/view-transitions/)
 controller in `src/scripts/transitions.ts` + `src/styles/transitions.css` —
 every page still works as a standalone full load (no JS required).
 
-The header's avatar slot (top right) is the Doom status face
-(`src/components/DoomFace.astro`). It is not a set of GIF files — it is a
+The face in the middle of the nav bar is the Doom status face
+(`src/components/DoomFace.astro`), sat in a recessed panel between the two
+halves of the nav so the row reads like Doom's own status bar. It is not a
+set of GIF files — it is a
 single 7x6 sprite sheet (`public/images/doom-face/burak-doom-faces.png`, rows
 0-4 are Doom health tiers, row 5 holds the dead and godmode faces) that the
 component animates at runtime by stepping `background-position`. It picks one
