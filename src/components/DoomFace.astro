@@ -1,0 +1,108 @@
+---
+import { withBase } from '../utils/url';
+
+// Geometry of public/images/doom-face/burak-doom-faces.png: a 7x6 grid where
+// rows 0-4 are Doom health tiers (fresh -> mangled) and row 5 holds the two
+// one-off faces (dead, godmode). Declared once here and handed to both the CSS
+// and the client script so the two can't drift apart.
+const COLS = 7;
+const ROWS = 6;
+---
+
+<div
+  class="doom-face"
+  id="doom-face"
+  data-cols={COLS}
+  data-rows={ROWS}
+  style={`background-image: url('${withBase('/images/doom-face/burak-doom-faces.png')}'); background-size: ${COLS * 100}% ${ROWS * 100}%;`}
+  title="Doom status face"
+  aria-hidden="true"
+>
+</div>
+
+<style>
+  .doom-face {
+    width: 44px;
+    height: 44px;
+    border: 3px solid var(--line);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    background-color: #12141a;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    image-rendering: pixelated;
+  }
+</style>
+
+<script>
+  type Frame = [col: number, row: number];
+  type Animation = { frames: Frame[]; ms: number };
+
+  const box = document.getElementById('doom-face');
+
+  if (box) {
+    const cols = Number(box.dataset.cols);
+    const rows = Number(box.dataset.rows);
+
+    // Columns are expressions; rows 0-4 are health tiers. Row 5 is the odd one
+    // out, holding only the dead and godmode faces.
+    const GRIN = 0,
+      SMILE = 1,
+      RAGE = 2,
+      SCREAM = 3,
+      AHEAD = 4,
+      LEFT = 5,
+      RIGHT = 6;
+    const TIERS = 5;
+    const DEAD: Frame = [0, 5];
+    const GOD: Frame = [1, 5];
+
+    const tier = () => Math.floor(Math.random() * TIERS);
+
+    // Built fresh on load, so the tier-keyed ones land on a different amount of
+    // damage every refresh.
+    const animations: (() => Animation)[] = [
+      // Doom's idle look-around: glance one way, forward, the other way.
+      () => {
+        const t = tier();
+        return { frames: [[LEFT, t], [AHEAD, t], [RIGHT, t], [AHEAD, t]], ms: 430 };
+      },
+      // Rampage: the face you get for holding the trigger down.
+      () => {
+        const t = tier();
+        return { frames: [[RAGE, t], [SCREAM, t], [RAGE, t], [AHEAD, t]], ms: 170 };
+      },
+      // Evil grin, as in "just picked up something with a lot of ammo".
+      () => {
+        const t = tier();
+        return { frames: [[GRIN, t], [SMILE, t], [GRIN, t], [AHEAD, t]], ms: 300 };
+      },
+      // Taking damage all the way down, then respawning at full health.
+      () => ({
+        frames: [[AHEAD, 0], [SCREAM, 1], [AHEAD, 2], [SCREAM, 3], [AHEAD, 4], DEAD, DEAD],
+        ms: 340,
+      }),
+      // Invulnerability sphere: the eyes give it away.
+      () => ({ frames: [GOD, GOD, [AHEAD, 0], GOD], ms: 280 }),
+    ];
+
+    const show = ([col, row]: Frame) => {
+      box.style.backgroundPosition = `${(col / (cols - 1)) * 100}% ${(row / (rows - 1)) * 100}%`;
+    };
+
+    const animation = animations[Math.floor(Math.random() * animations.length)]();
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      show(animation.frames[0]);
+    } else {
+      let i = 0;
+      const tick = () => {
+        show(animation.frames[i % animation.frames.length]);
+        i += 1;
+        // A little jitter per frame so the loop doesn't read as metronomic.
+        window.setTimeout(tick, animation.ms + Math.random() * 90);
+      };
+      tick();
+    }
+  }
+</script>

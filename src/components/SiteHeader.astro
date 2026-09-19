@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import ThemeToggle from './ThemeToggle.astro';
+import DoomFace from './DoomFace.astro';
 import { withBase } from '../utils/url';
 
 // Randomized avatar: any image dropped in public/gifs/ is a candidate,
@@ -31,6 +32,7 @@ try {
     >
       <span>GIF<br />SOON</span>
     </div>
+    <DoomFace />
   </div>
 </header>
 
