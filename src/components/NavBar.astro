@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../utils/url';
+
 interface Props {
   current: string;
 }
@@ -6,14 +8,16 @@ interface Props {
 const { current } = Astro.props;
 
 const items = [
-  { key: 'info', label: 'INFO', href: '/', accent: 'is-primary' },
-  { key: 'blog', label: 'BLOG', href: '/blog', accent: 'is-warning' },
-  { key: 'career', label: 'CAREER', href: '/career', accent: 'is-success' },
-  { key: 'contact', label: 'CONTACT', href: '/contact', accent: 'is-error' },
+  { key: 'info', label: 'INFO', href: withBase('/'), accent: 'is-primary' },
+  { key: 'blog', label: 'BLOG', href: withBase('/blog'), accent: 'is-warning' },
+  { key: 'career', label: 'CAREER', href: withBase('/career'), accent: 'is-success' },
+  { key: 'contact', label: 'CONTACT', href: withBase('/contact'), accent: 'is-error' },
 ] as const;
 
+// `current` (Astro.url.pathname) is already base-prefixed, so comparisons
+// against the base-prefixed hrefs above stay correct either way.
 function isActive(href: string): boolean {
-  if (href === '/') return current === '/';
+  if (href === withBase('/')) return current === href;
   return current === href || current.startsWith(`${href}/`);
 }
 ---

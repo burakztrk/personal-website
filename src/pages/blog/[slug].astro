@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../utils/url';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('blog'))
@@ -41,12 +42,12 @@ const accentClass = `is-${post.data.accent}`;
 
     <div class="pagination-row">
       {prev ? (
-        <a href={`/blog/${prev.id}`} class="nes-btn">&#9668; {prev.data.title}</a>
+        <a href={withBase(`/blog/${prev.id}`)} class="nes-btn">&#9668; {prev.data.title}</a>
       ) : (
         <span></span>
       )}
       {next ? (
-        <a href={`/blog/${next.id}`} class="nes-btn">{next.data.title} &#9658;</a>
+        <a href={withBase(`/blog/${next.id}`)} class="nes-btn">{next.data.title} &#9658;</a>
       ) : (
         <span></span>
       )}

@@ -3,6 +3,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import NavBar from '../components/NavBar.astro';
 import '../styles/global.css';
 import '../styles/transitions.css';
+import { withBase } from '../utils/url';
 
 interface Props {
   title: string;
@@ -19,7 +20,7 @@ const pathname = Astro.url.pathname;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <title>{title} · ozturk.ai</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />

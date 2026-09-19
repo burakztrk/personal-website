@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../utils/url';
 
 const posts = (await getCollection('blog'))
   .filter((entry) => !entry.data.draft)
@@ -19,7 +20,7 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', { year: 'numeric', month:
       {
         posts.map((post) => (
           <li class="divider-row post-row">
-            <a href={`/blog/${post.id}`} class="post-title">
+            <a href={withBase(`/blog/${post.id}`)} class="post-title">
               {post.data.title}
             </a>
             <span class="dim post-date">{dateFormatter.format(post.data.date)}</span>

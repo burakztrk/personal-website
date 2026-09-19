@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import ThemeToggle from './ThemeToggle.astro';
+import { withBase } from '../utils/url';
 
 // Randomized avatar: any image dropped in public/gifs/ is a candidate,
 // picked client-side on load. Empty folder = keep the "GIF SOON"
@@ -18,7 +19,7 @@ try {
 ---
 
 <header class="site-chrome site-header">
-  <a href="/" class="brand">ozturk<span class="brand-dot">.</span>ai</a>
+  <a href={withBase('/')} class="brand">ozturk<span class="brand-dot">.</span>ai</a>
 
   <div class="site-header-actions">
     <ThemeToggle />
@@ -91,13 +92,15 @@ try {
 </style>
 
 <script>
+  import { withBase } from '../utils/url';
+
   const slot = document.getElementById('gif-slot');
   const files: string[] = slot ? JSON.parse(slot.dataset.gifs ?? '[]') : [];
 
   if (slot && files.length > 0) {
     const pick = files[Math.floor(Math.random() * files.length)];
     const img = document.createElement('img');
-    img.src = `/gifs/${pick}`;
+    img.src = withBase(`/gifs/${pick}`);
     img.alt = '';
     slot.replaceChildren(img);
     slot.classList.add('has-gif');
