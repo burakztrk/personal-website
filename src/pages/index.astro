@@ -1,0 +1,92 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const infoEntries = await getCollection('info');
+const info = infoEntries[0];
+const { Content } = await render(info);
+
+const career = (await getCollection('career')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Info" description={`${info.data.title} — ${info.data.role}`}>
+  <div class="panel">
+    <span class="panel-title">info.about</span>
+
+    <div class="info-heading">
+      <div class="avatar" aria-hidden="true"></div>
+      <div>
+        <h1>{info.data.title}</h1>
+        <p class="dim role-line">{info.data.role} &middot; {info.data.location}</p>
+      </div>
+    </div>
+
+    <div class="body-copy bio">
+      <Content />
+    </div>
+
+    <div class="badge-row">
+      <span class="nes-badge"><span class="is-primary">ANDROID</span></span>
+      <span class="nes-badge"><span class="is-success">CI/CD</span></span>
+      <span class="nes-badge"><span class="is-warning">COMPOSE</span></span>
+      <span class="nes-badge"><span class="is-error">HOMELAB</span></span>
+      <span class="nes-badge"><span class="is-warning">PROXMOX</span></span>
+      <span class="nes-badge"><span class="is-success">LITELLM</span></span>
+    </div>
+
+    <h2>WORK</h2>
+    <div class="section-block">
+      {
+        career.map((role) => (
+          <div class="divider-row">
+            <span class="dim role-date">{role.data.dateLabel}</span>
+            <span class="body-copy">
+              {role.data.role} @ {role.data.org}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .info-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    margin: var(--space-4) 0 var(--space-5);
+  }
+
+  .avatar {
+    width: 64px;
+    height: 64px;
+    background: var(--raised);
+    border: 4px solid var(--line);
+    flex-shrink: 0;
+  }
+
+  .role-line {
+    margin: 0;
+    font-size: 17px;
+  }
+
+  .bio {
+    margin: 0 0 var(--space-4);
+  }
+
+  .badge-row {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-8);
+  }
+
+  .section-block {
+    margin-bottom: var(--space-8);
+  }
+
+  .role-date {
+    font-size: 16px;
+  }
+</style>

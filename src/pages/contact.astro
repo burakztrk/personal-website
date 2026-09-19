@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const email = 'burak@ozturk.ai';
+const linkedinUrl = 'https://www.linkedin.com/in/burakztrk/';
+const githubUrl = 'https://github.com/burakztrk/';
+---
+
+<BaseLayout title="Contact" description="Get in touch.">
+  <div class="panel">
+    <span class="panel-title">contact.mail</span>
+
+    <h1>GET IN TOUCH</h1>
+    <p class="body-copy intro">Got a project, a collaboration, or just want to say hi?</p>
+
+    <div class="direct-actions">
+      <button type="button" id="copy-email" class="nes-btn is-primary">COPY EMAIL</button>
+    </div>
+
+    <div class="social-row">
+      <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" class="nes-btn">Linkedin</a>
+      <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="nes-btn">Github</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .intro {
+    margin: var(--space-4) 0 var(--space-8);
+  }
+
+  .direct-actions {
+    margin-bottom: var(--space-4);
+  }
+
+  .direct-actions .nes-btn {
+    font-family: var(--font-display);
+    font-size: 11px;
+  }
+
+  .social-row {
+    display: flex;
+    gap: var(--space-3);
+    max-width: 320px;
+  }
+
+  .social-row .nes-btn {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+</style>
+
+<script define:vars={{ email }}>
+  const copyBtn = document.getElementById('copy-email');
+  copyBtn?.addEventListener('click', async () => {
+    const original = copyBtn.textContent;
+    try {
+      await navigator.clipboard.writeText(email);
+      copyBtn.textContent = 'COPIED!';
+    } catch {
+      copyBtn.textContent = email;
+    }
+    setTimeout(() => {
+      copyBtn.textContent = original;
+    }, 2000);
+  });
+</script>

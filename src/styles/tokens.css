@@ -1,0 +1,46 @@
+/* Design tokens — dark is the default theme, light is an override set via
+   [data-theme="light"] on <html> (see src/scripts/theme.ts). Accent colors
+   are identical in both themes and intentionally equal to NES.css's own
+   is-primary/is-success/is-warning/is-error colors, so no accent override
+   is needed anywhere else in the codebase. */
+
+:root {
+  --ground: #12141a;
+  --surface: #212529;
+  --raised: #2c3138;
+  --ink: #f7f7f2;
+  --ink-dim: #aeb6bf;
+  --line: #4a515a;
+
+  --primary: #209cee;
+  --warning: #f7d51d;
+  --success: #92cc41;
+  --error: #e76e55;
+
+  --capsule-top: #f2f0e4;
+  --capsule-base: #e05a47;
+
+  --font-display: 'Press Start 2P', monospace;
+  --font-body: 'DotGothic16', monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* 4px spacing grid — use these instead of ad-hoc pixel values. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+}
+
+:root[data-theme='light'] {
+  --ground: #f7f7f2;
+  --surface: #ffffff;
+  --raised: #edede8;
+  --ink: #12141a;
+  --ink-dim: #5a626b;
+  --line: #21252b;
+}

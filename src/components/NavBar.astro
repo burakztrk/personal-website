@@ -1,0 +1,60 @@
+---
+interface Props {
+  current: string;
+}
+
+const { current } = Astro.props;
+
+const items = [
+  { key: 'info', label: 'INFO', href: '/', accent: 'is-primary' },
+  { key: 'blog', label: 'BLOG', href: '/blog', accent: 'is-warning' },
+  { key: 'career', label: 'CAREER', href: '/career', accent: 'is-success' },
+  { key: 'contact', label: 'CONTACT', href: '/contact', accent: 'is-error' },
+] as const;
+
+function isActive(href: string): boolean {
+  if (href === '/') return current === '/';
+  return current === href || current.startsWith(`${href}/`);
+}
+---
+
+<nav class="site-chrome" aria-label="Primary navigation">
+  <div class="nav-bar">
+    {
+      items.map((item) => {
+        const active = isActive(item.href);
+        return (
+          <a
+            href={item.href}
+            class={`nav-link nes-btn ${active ? item.accent : ''}`}
+            data-accent={item.accent}
+            aria-current={active ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        );
+      })
+    }
+  </div>
+</nav>
+
+<style>
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    padding: var(--space-3) var(--space-6);
+    background: var(--surface);
+    border: 4px solid var(--line);
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  .nav-link {
+    font-family: var(--font-display);
+    font-size: 10px;
+    text-decoration: none;
+  }
+</style>
