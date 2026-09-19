@@ -1,0 +1,145 @@
+/* GameBoy-style page transition, driven by the native View Transitions API.
+   Every segment uses steps() timing — nothing eases smoothly, which is what
+   makes it read as hardware rather than a modern fade. See the design spec
+   in the project plan for the full timing breakdown. */
+
+::view-transition-group(root) {
+  animation-duration: 620ms;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+  animation:
+    gb-old-flash 60ms steps(1, end) forwards,
+    gb-old-settle 60ms steps(1, end) 60ms forwards,
+    gb-old-blinds 180ms steps(8, end) 120ms forwards,
+    gb-old-blackout 60ms steps(1, end) 300ms forwards;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+  opacity: 0;
+  animation: gb-new-reveal 260ms steps(6, end) 360ms forwards;
+}
+
+@keyframes gb-old-flash {
+  from {
+    filter: brightness(1);
+  }
+  to {
+    filter: brightness(6) contrast(1.2);
+  }
+}
+
+@keyframes gb-old-settle {
+  from {
+    filter: brightness(6) contrast(1.2);
+  }
+  to {
+    filter: sepia(0.6) saturate(2.4) brightness(0.85) hue-rotate(-10deg);
+  }
+}
+
+@keyframes gb-old-blinds {
+  from {
+    filter: sepia(0.6) saturate(2.4) brightness(0.85) hue-rotate(-10deg);
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    filter: brightness(0);
+    clip-path: inset(50% 0 50% 0);
+  }
+}
+
+@keyframes gb-old-blackout {
+  from,
+  to {
+    filter: brightness(0);
+    clip-path: inset(50% 0 50% 0);
+  }
+}
+
+@keyframes gb-new-reveal {
+  from {
+    opacity: 1;
+    clip-path: circle(0% at 50% 50%);
+  }
+  to {
+    opacity: 1;
+    clip-path: circle(75% at 50% 50%);
+  }
+}
+
+/* Back/forward (CLOSE): shorter and simpler than the forward OPEN sequence
+   — a quick darken-and-reveal instead of the full flash/blinds/blackout
+   build-up. Toggled by transitions.ts via [data-transition-direction]. */
+html[data-transition-direction='back'] ::view-transition-group(root) {
+  animation-duration: 260ms;
+}
+
+html[data-transition-direction='back'] ::view-transition-old(root) {
+  animation: gb-close-old 100ms steps(1, end) forwards;
+}
+
+html[data-transition-direction='back'] ::view-transition-new(root) {
+  opacity: 0;
+  animation: gb-close-new 160ms steps(4, end) 100ms forwards;
+}
+
+@keyframes gb-close-old {
+  from {
+    filter: brightness(1);
+  }
+  to {
+    filter: brightness(0);
+  }
+}
+
+@keyframes gb-close-new {
+  from {
+    opacity: 1;
+    clip-path: inset(0 45% 0 45%);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Reduced motion: a plain, quick crossfade — no flash, no blinds, no
+   blackout hold. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root) {
+    animation-duration: 120ms;
+  }
+
+  ::view-transition-old(root) {
+    animation: gb-fade-out 120ms ease-out forwards;
+    clip-path: none;
+    filter: none;
+  }
+
+  ::view-transition-new(root) {
+    animation: gb-fade-in 120ms ease-out forwards;
+    clip-path: none;
+    filter: none;
+  }
+
+  @keyframes gb-fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes gb-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}

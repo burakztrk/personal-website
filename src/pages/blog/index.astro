@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('blog'))
+  .filter((entry) => !entry.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const dateFormatter = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit' });
+---
+
+<BaseLayout title="Blog" description="Writing.">
+  <div class="panel">
+    <span class="panel-title">blog/</span>
+
+    <h1>BLOG</h1>
+
+    <ul class="post-list">
+      {
+        posts.map((post) => (
+          <li class="divider-row post-row">
+            <a href={`/blog/${post.id}`} class="post-title">
+              {post.data.title}
+            </a>
+            <span class="dim post-date">{dateFormatter.format(post.data.date)}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    {posts.length === 0 && <p class="body-copy dim">No posts yet.</p>}
+  </div>
+</BaseLayout>
+
+<style>
+  .post-list {
+    list-style: none;
+    margin: var(--space-4) 0 0;
+    padding: 0;
+  }
+
+  .post-row {
+    gap: var(--space-4);
+  }
+
+  .post-title {
+    font-family: var(--font-body);
+    font-size: 19px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .post-title:hover {
+    color: var(--warning);
+  }
+
+  .post-date {
+    font-size: 15px;
+    white-space: nowrap;
+  }
+</style>
