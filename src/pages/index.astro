@@ -105,22 +105,26 @@ const tags = [
 
     let index = 0;
     let godMode = false;
-    let animating = false;
+    let swapTimer: ReturnType<typeof window.setTimeout> | undefined;
+    let endTimer: ReturnType<typeof window.setTimeout> | undefined;
 
     const show = (i: number) => {
       frame.style.backgroundPosition = `${(i / (total - 1)) * 100}% 0`;
     };
 
-    /** Runs the GameBoy swap onto `next`. False when one is already playing. */
-    function transitionTo(next: number): boolean {
-      if (animating) return false;
+    /** Runs the GameBoy swap onto `next`, interrupting one already playing. */
+    function transitionTo(next: number) {
+      // A tap has to land every time. The animation runs 500ms out of every
+      // 2s tick, so refusing while one plays would drop roughly a quarter of
+      // them; cancel the in-flight swap instead and start this one.
+      window.clearTimeout(swapTimer);
+      window.clearTimeout(endTimer);
 
       if (reduceMotion) {
         show(next);
-        return true;
+        return;
       }
 
-      animating = true;
       frame.classList.remove('is-cycling');
       // Force reflow so the animation restarts on repeated triggers.
       void frame.offsetWidth;
@@ -128,14 +132,11 @@ const tags = [
 
       // Swap the frame once the blinds have fully closed (blackout phase
       // starts at 260ms), matching the page-transition's own timing.
-      window.setTimeout(() => show(next), 260);
+      swapTimer = window.setTimeout(() => show(next), 260);
 
-      window.setTimeout(() => {
+      endTimer = window.setTimeout(() => {
         frame.classList.remove('is-cycling');
-        animating = false;
       }, 500);
-
-      return true;
     }
 
     function restartAutoCycle() {
@@ -144,17 +145,15 @@ const tags = [
         // God mode is a state you sit in, so the cycle waits it out rather
         // than advancing underneath and yanking the face back mid-stare.
         if (godMode) return;
-        const next = (index + 1) % god;
-        if (transitionTo(next)) index = next;
+        index = (index + 1) % god;
+        transitionTo(index);
       }, AUTO_CYCLE_MS);
     }
 
     avatar.addEventListener('click', () => {
-      // Only commit the toggle if the transition actually started, so a click
-      // swallowed mid-animation doesn't leave the state lying about the face.
-      if (!transitionTo(godMode ? index : god)) return;
       godMode = !godMode;
       avatar.setAttribute('aria-pressed', String(godMode));
+      transitionTo(godMode ? god : index);
       restartAutoCycle();
     });
 
@@ -174,13 +173,14 @@ const tags = [
     margin: var(--space-4) 0 var(--space-5);
   }
 
-  /* Portrait, not square: the source frames run from the top of the hair to
-     the shoulders, and a square box could only hold that by cutting the head
-     off. 120x193 of content matches the frames' aspect, so nothing is
-     cropped and nothing is stretched. */
+  /* Slightly taller than wide: a square box would cut the top of the head
+     off, but the full frame down to the shoulders left the face small in a
+     gangly box. 120x141 of content matches the frames' aspect exactly, so
+     nothing is cropped and nothing is stretched — keep the two in step if
+     either ever changes. */
   .avatar {
     width: 128px;
-    height: 201px;
+    height: 149px;
     padding: 0;
     background: var(--raised);
     border: 4px solid var(--line);
