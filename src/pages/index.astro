@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../utils/url';
 
 const infoEntries = await getCollection('info');
 const info = infoEntries[0];
@@ -14,7 +15,19 @@ const career = (await getCollection('career')).sort((a, b) => a.data.order - b.d
     <span class="panel-title">info.about</span>
 
     <div class="info-heading">
-      <div class="avatar" aria-hidden="true"></div>
+      <button
+        type="button"
+        class="avatar"
+        id="avatar-cycle"
+        data-images={JSON.stringify([
+          withBase('/images/info-avatar/avatar-color.png'),
+          withBase('/images/info-avatar/avatar-vivid.png'),
+          withBase('/images/info-avatar/avatar-mono.png'),
+        ])}
+        aria-label="Cycle avatar photo"
+      >
+        <img src={withBase('/images/info-avatar/avatar-color.png')} alt="" />
+      </button>
       <div>
         <h1>{info.data.title}</h1>
         <p class="dim role-line">{info.data.role} &middot; {info.data.location}</p>
@@ -50,6 +63,48 @@ const career = (await getCollection('career')).sort((a, b) => a.data.order - b.d
   </div>
 </BaseLayout>
 
+<script>
+  const avatar = document.getElementById('avatar-cycle');
+  const img = avatar?.querySelector('img');
+  const images: string[] = avatar ? JSON.parse(avatar.dataset.images ?? '[]') : [];
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let index = 0;
+  let animating = false;
+
+  function cycle() {
+    if (!avatar || !img || images.length < 2 || animating) return;
+
+    index = (index + 1) % images.length;
+    const next = images[index];
+
+    if (reduceMotion) {
+      img.src = next;
+      return;
+    }
+
+    animating = true;
+    img.classList.remove('is-cycling');
+    // Force reflow so the animation restarts on repeated triggers.
+    void img.offsetWidth;
+    img.classList.add('is-cycling');
+
+    // Swap the frame once the blinds have fully closed (blackout phase
+    // starts at 260ms), matching the page-transition's own timing.
+    window.setTimeout(() => {
+      img.src = next;
+    }, 260);
+
+    window.setTimeout(() => {
+      img.classList.remove('is-cycling');
+      animating = false;
+    }, 500);
+  }
+
+  avatar?.addEventListener('click', cycle);
+  avatar?.addEventListener('mouseenter', cycle);
+</script>
+
 <style>
   .info-heading {
     display: flex;
@@ -59,11 +114,94 @@ const career = (await getCollection('career')).sort((a, b) => a.data.order - b.d
   }
 
   .avatar {
-    width: 64px;
-    height: 64px;
+    width: 128px;
+    height: 128px;
+    padding: 0;
     background: var(--raised);
     border: 4px solid var(--line);
     flex-shrink: 0;
+    overflow: hidden;
+    cursor: pointer;
+    line-height: 0;
+  }
+
+  .avatar:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  .avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+  }
+
+  /* GameBoy-style swap, same design language as src/styles/transitions.css
+     (steps() timing, brightness flash, sepia settle, blinds blackout, then
+     a clipped reveal of the next frame) — scaled down to the avatar. */
+  .avatar img.is-cycling {
+    animation:
+      avatar-flash 60ms steps(1, end) forwards,
+      avatar-settle 60ms steps(1, end) 60ms forwards,
+      avatar-blinds 140ms steps(6, end) 120ms forwards,
+      avatar-blackout 40ms steps(1, end) 260ms forwards,
+      avatar-reveal 200ms steps(6, end) 300ms forwards;
+  }
+
+  @keyframes avatar-flash {
+    from {
+      filter: brightness(1);
+    }
+    to {
+      filter: brightness(6) contrast(1.2);
+    }
+  }
+
+  @keyframes avatar-settle {
+    from {
+      filter: brightness(6) contrast(1.2);
+    }
+    to {
+      filter: sepia(0.6) saturate(2.4) brightness(0.85) hue-rotate(-10deg);
+    }
+  }
+
+  @keyframes avatar-blinds {
+    from {
+      filter: sepia(0.6) saturate(2.4) brightness(0.85) hue-rotate(-10deg);
+      clip-path: inset(0 0 0 0);
+    }
+    to {
+      filter: brightness(0);
+      clip-path: inset(50% 0 50% 0);
+    }
+  }
+
+  @keyframes avatar-blackout {
+    from,
+    to {
+      filter: brightness(0);
+      clip-path: inset(50% 0 50% 0);
+    }
+  }
+
+  @keyframes avatar-reveal {
+    from {
+      filter: brightness(0);
+      clip-path: inset(50% 0 50% 0);
+    }
+    to {
+      filter: brightness(1);
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .avatar img.is-cycling {
+      animation: none;
+    }
   }
 
   .role-line {
