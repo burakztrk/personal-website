@@ -161,9 +161,13 @@ const tags = [
     margin: var(--space-4) 0 var(--space-5);
   }
 
+  /* Portrait, not square: the source frames run from the top of the hair to
+     the shoulders, and a square box could only hold that by cutting the head
+     off. 120x173 of content matches the frames' aspect, so nothing is
+     cropped and nothing is stretched. */
   .avatar {
     width: 128px;
-    height: 128px;
+    height: 181px;
     padding: 0;
     background: var(--raised);
     border: 4px solid var(--line);
