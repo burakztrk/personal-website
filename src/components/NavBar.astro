@@ -103,7 +103,9 @@ function isActive(href: string): boolean {
     flex-shrink: 0;
     padding: var(--space-2) var(--space-5);
     margin: calc(-1 * var(--space-3)) 0;
-    background: var(--ground);
+    /* Same well colour as the face itself, so the panel reads as one screen
+       rather than a frame around a second frame. */
+    background: var(--screen);
     border-left: 3px solid var(--line);
     border-right: 3px solid var(--line);
     box-shadow: inset 0 0 0 2px rgb(0 0 0 / 35%);
@@ -115,29 +117,28 @@ function isActive(href: string): boolean {
     text-decoration: none;
   }
 
-  /* Below roughly 680px the four buttons plus the face stop fitting on one
-     line; let the face take the top row on its own instead of squeezing. */
+  /* Below roughly 680px two buttons abreast stop fitting either side of the
+     face. Stack each half instead, which keeps the face where it belongs —
+     in the middle of the buttons — rather than banished to its own row. */
   @media (max-width: 680px) {
     .nav-bar {
       gap: var(--space-3);
+      padding: var(--space-3);
     }
 
-    /* Dissolve the two groups so all four buttons share one wrapping row
-       under the face, rather than each group claiming a row of its own. */
     .nav-group {
-      display: contents;
-    }
-
-    .nav-face {
-      order: 1;
-      flex-basis: 100%;
-      justify-content: center;
-      margin: 0;
-      border: 3px solid var(--line);
+      flex-direction: column;
+      gap: var(--space-2);
     }
 
     .nav-link {
-      order: 2;
+      width: 100%;
+      text-align: center;
+      font-size: 9px;
+    }
+
+    .nav-face {
+      padding: var(--space-2) var(--space-3);
     }
   }
 </style>

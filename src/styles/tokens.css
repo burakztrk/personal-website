@@ -20,6 +20,11 @@
   --capsule-top: #f2f0e4;
   --capsule-base: #e05a47;
 
+  /* The dark well the Doom face is read against. Constant across themes for
+     the same reason the accents are: it is part of the sprite's own look,
+     not of the surrounding surface. */
+  --screen: #12141a;
+
   --font-display: 'Press Start 2P', monospace;
   --font-body: 'DotGothic16', monospace;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
