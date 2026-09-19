@@ -18,10 +18,9 @@ export function getStoredTheme(): Theme | null {
   }
 }
 
+/** Doom is the site's default; the OS preference only decides nothing here. */
 export function getPreferredTheme(): Theme {
-  const stored = getStoredTheme();
-  if (stored) return stored;
-  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  return getStoredTheme() ?? 'doom';
 }
 
 export function getCurrentTheme(): Theme {

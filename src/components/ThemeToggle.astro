@@ -1,12 +1,80 @@
-<button type="button" id="theme-toggle" class="nes-btn" title="Switch theme">
-  <span id="theme-toggle-icon" aria-hidden="true">&#9728;&#65038;</span>
+---
+// 8x8 pixel icons, one per theme you can switch to. Written as bitmaps
+// because that is the honest way to read them, then emitted as one <rect>
+// per lit pixel so they stay crisp at any size. nes.css ships no sun, moon
+// or skull, hence drawing them here.
+const ICONS: Record<string, string[]> = {
+  // sun -> switch to light
+  sun: [
+    '...##...',
+    '.#....#.',
+    '..####..',
+    '#.####.#',
+    '#.####.#',
+    '..####..',
+    '.#....#.',
+    '...##...',
+  ],
+  // moon -> switch to dark
+  moon: [
+    '..###...',
+    '.##.....',
+    '##......',
+    '##......',
+    '##......',
+    '##......',
+    '.##.....',
+    '..###...',
+  ],
+  // skull -> switch to doom
+  skull: [
+    '..####..',
+    '.######.',
+    '########',
+    '#..##..#',
+    '########',
+    '.######.',
+    '..####..',
+    '..#..#..',
+  ],
+};
+
+const pixels = (rows: string[]) =>
+  rows.flatMap((row, y) =>
+    [...row].flatMap((cell, x) => (cell === '#' ? [{ x, y }] : []))
+  );
+---
+
+<button type="button" id="theme-toggle" class="nes-btn" data-icon="sun" title="Switch theme">
+  {
+    Object.entries(ICONS).map(([name, rows]) => (
+      <svg class="theme-icon" data-for={name} viewBox="0 0 8 8" aria-hidden="true">
+        {pixels(rows).map(({ x, y }) => (
+          <rect x={x} y={y} width="1" height="1" />
+        ))}
+      </svg>
+    ))
+  }
 </button>
 
 <style>
   #theme-toggle {
-    font-size: 14px;
-    line-height: 1;
-    padding: 6px 10px;
+    padding: 8px 10px;
+    line-height: 0;
+  }
+
+  .theme-icon {
+    display: none;
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    shape-rendering: crispedges;
+  }
+
+  #theme-toggle[data-icon='sun'] .theme-icon[data-for='sun'],
+  #theme-toggle[data-icon='moon'] .theme-icon[data-for='moon'],
+  #theme-toggle[data-icon='skull'] .theme-icon[data-for='skull'] {
+    display: block;
   }
 </style>
 
@@ -14,21 +82,15 @@
   import { cycleTheme, nextTheme, type Theme } from '../scripts/theme';
 
   // Show the theme you'd switch TO, the usual convention for a theme button.
-  // The variation selector keeps these as glyphs rather than colour emoji,
-  // which would sit badly next to the pixel typeface.
-  const ICONS: Record<Theme, string> = {
-    dark: '☽︎',
-    light: '☀︎',
-    doom: '☠︎',
-  };
+  const ICON_FOR: Record<Theme, string> = { light: 'sun', dark: 'moon', doom: 'skull' };
 
   const button = document.getElementById('theme-toggle');
-  const icon = document.getElementById('theme-toggle-icon');
 
   function sync() {
     const next = nextTheme();
-    if (icon) icon.textContent = ICONS[next];
-    button?.setAttribute('aria-label', `Switch to ${next} theme`);
+    if (!button) return;
+    button.dataset.icon = ICON_FOR[next];
+    button.setAttribute('aria-label', `Switch to ${next} theme`);
   }
 
   button?.addEventListener('click', () => {
