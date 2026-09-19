@@ -86,7 +86,7 @@ try {
   .gif-slot img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     image-rendering: pixelated;
   }
 </style>
@@ -102,6 +102,13 @@ try {
     const img = document.createElement('img');
     img.src = withBase(`/gifs/${pick}`);
     img.alt = '';
+    // Astro's scoped styles only tag elements present in the template at
+    // build time (via a data-astro-cid-* attribute), so this element,
+    // created client-side, needs that attribute copied over by hand or
+    // the .gif-slot img sizing/object-fit rules below silently never match.
+    for (const name of slot.getAttributeNames()) {
+      if (name.startsWith('data-astro-cid')) img.setAttribute(name, slot.getAttribute(name) ?? '');
+    }
     slot.replaceChildren(img);
     slot.classList.add('has-gif');
   }
