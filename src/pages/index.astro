@@ -82,12 +82,23 @@ const tags = [
 </BaseLayout>
 
 <script>
+  import { SOFT_NAV_EVENT } from '../scripts/transitions';
+
   const AUTO_CYCLE_MS = 2000;
 
-  const avatar = document.getElementById('avatar-cycle');
-  const frame = avatar?.querySelector<HTMLElement>('.avatar-frame');
+  // A soft navigation replaces <main>, so coming back to this page hands us a
+  // brand new avatar element while this module keeps running from the first
+  // load. Bind on every arrival, and drop the previous page's timer, or it
+  // would tick away against a node that is no longer in the document.
+  let autoTimer: ReturnType<typeof window.setInterval> | undefined;
 
-  if (avatar && frame) {
+  function initAvatar() {
+    window.clearInterval(autoTimer);
+
+    const avatar = document.getElementById('avatar-cycle');
+    const frame = avatar?.querySelector<HTMLElement>('.avatar-frame');
+    if (!avatar || !frame) return;
+
     const total = Number(avatar.dataset.frames);
     const god = Number(avatar.dataset.god);
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -95,7 +106,6 @@ const tags = [
     let index = 0;
     let godMode = false;
     let animating = false;
-    let autoTimer: ReturnType<typeof window.setInterval> | undefined;
 
     const show = (i: number) => {
       frame.style.backgroundPosition = `${(i / (total - 1)) * 100}% 0`;
@@ -111,17 +121,17 @@ const tags = [
       }
 
       animating = true;
-      frame!.classList.remove('is-cycling');
+      frame.classList.remove('is-cycling');
       // Force reflow so the animation restarts on repeated triggers.
-      void frame!.offsetWidth;
-      frame!.classList.add('is-cycling');
+      void frame.offsetWidth;
+      frame.classList.add('is-cycling');
 
       // Swap the frame once the blinds have fully closed (blackout phase
       // starts at 260ms), matching the page-transition's own timing.
       window.setTimeout(() => show(next), 260);
 
       window.setTimeout(() => {
-        frame!.classList.remove('is-cycling');
+        frame.classList.remove('is-cycling');
         animating = false;
       }, 500);
 
@@ -151,6 +161,9 @@ const tags = [
     show(index);
     restartAutoCycle();
   }
+
+  initAvatar();
+  document.addEventListener(SOFT_NAV_EVENT, initAvatar);
 </script>
 
 <style>
@@ -163,11 +176,11 @@ const tags = [
 
   /* Portrait, not square: the source frames run from the top of the hair to
      the shoulders, and a square box could only hold that by cutting the head
-     off. 120x173 of content matches the frames' aspect, so nothing is
+     off. 120x193 of content matches the frames' aspect, so nothing is
      cropped and nothing is stretched. */
   .avatar {
     width: 128px;
-    height: 181px;
+    height: 201px;
     padding: 0;
     background: var(--raised);
     border: 4px solid var(--line);
