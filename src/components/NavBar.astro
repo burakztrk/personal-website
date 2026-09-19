@@ -39,11 +39,11 @@ function isActive(href: string): boolean {
               return (
                 <a
                   href={item.href}
-                  class={`nav-link nes-btn ${active ? item.accent : ''}`}
+                  class="nav-link nes-badge"
                   data-accent={item.accent}
                   aria-current={active ? 'page' : undefined}
                 >
-                  {item.label}
+                  <span class={active ? item.accent : 'is-dark'}>{item.label}</span>
                 </a>
               );
             })}
@@ -67,7 +67,10 @@ function isActive(href: string): boolean {
     gap: var(--space-4);
     flex-wrap: wrap;
     padding: var(--space-3) var(--space-4);
-    background: var(--surface);
+    /* Raised rather than surface: nes.css paints an is-dark badge #212529,
+       which is exactly the dark theme's --surface, so inactive badges would
+       otherwise dissolve into the bar. */
+    background: var(--raised);
     border: 4px solid var(--line);
     border-radius: 4px;
     box-sizing: border-box;
@@ -111,10 +114,21 @@ function isActive(href: string): boolean {
     box-shadow: inset 0 0 0 2px rgb(0 0 0 / 35%);
   }
 
+  /* nes.css sizes a badge to its own em width and spaces it with a margin;
+     override both so every label occupies the same fixed box and the flex
+     gap alone controls the spacing. The colour lives on the inner span,
+     which nes.css absolutely positions to fill this width. */
   .nav-link {
+    width: 104px;
+    height: 24px;
+    margin: 0;
     font-family: var(--font-display);
     font-size: 10px;
     text-decoration: none;
+  }
+
+  .nav-link span {
+    line-height: 24px;
   }
 
   /* Below roughly 680px two buttons abreast stop fitting either side of the
@@ -128,12 +142,13 @@ function isActive(href: string): boolean {
 
     .nav-group {
       flex-direction: column;
-      gap: var(--space-2);
+      /* Wide enough that the badges' pixel outlines, which bleed half an em
+         past the box, don't touch when stacked. */
+      gap: var(--space-3);
     }
 
     .nav-link {
-      width: 100%;
-      text-align: center;
+      width: 88px;
       font-size: 9px;
     }
 
