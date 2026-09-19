@@ -173,14 +173,13 @@ const tags = [
     margin: var(--space-4) 0 var(--space-5);
   }
 
-  /* Slightly taller than wide: a square box would cut the top of the head
-     off, but the full frame down to the shoulders left the face small in a
-     gangly box. 120x141 of content matches the frames' aspect exactly, so
-     nothing is cropped and nothing is stretched — keep the two in step if
-     either ever changes. */
+  /* Portrait: the frames run from the top of the hair to the shoulders, and
+     anything shorter chops the shoulders off. 120x193 of content matches the
+     frames' aspect exactly, so nothing is cropped and nothing is stretched —
+     keep the two in step if either ever changes. */
   .avatar {
     width: 128px;
-    height: 149px;
+    height: 201px;
     padding: 0;
     background: var(--raised);
     border: 4px solid var(--line);
