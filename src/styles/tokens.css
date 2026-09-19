@@ -44,3 +44,15 @@
   --ink-dim: #5a626b;
   --line: #21252b;
 }
+
+/* Doom: the 1993 status bar's palette — gunmetal browns, bone text and a
+   rusted edge. Accents stay put for the reason above, which also keeps the
+   badges reading like HUD indicators. */
+:root[data-theme='doom'] {
+  --ground: #14100e;
+  --surface: #2a2421;
+  --raised: #3a312c;
+  --ink: #e8dcc6;
+  --ink-dim: #a08e76;
+  --line: #7a4a33;
+}

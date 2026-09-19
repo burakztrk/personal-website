@@ -1,11 +1,5 @@
-<button
-  type="button"
-  id="theme-toggle"
-  class="nes-btn"
-  aria-label="Toggle theme: light/dark"
-  title="Toggle theme"
->
-  <span id="theme-toggle-icon" aria-hidden="true">&#9789;</span>
+<button type="button" id="theme-toggle" class="nes-btn" title="Switch theme">
+  <span id="theme-toggle-icon" aria-hidden="true">&#9728;&#65038;</span>
 </button>
 
 <style>
@@ -17,20 +11,30 @@
 </style>
 
 <script>
-  import { getCurrentTheme, toggleTheme } from '../scripts/theme';
+  import { cycleTheme, nextTheme, type Theme } from '../scripts/theme';
 
-  function syncIcon() {
-    const icon = document.getElementById('theme-toggle-icon');
-    if (!icon) return;
-    // Sun for "switch to light is not needed" — show the icon for the
-    // theme you'd switch TO, which is the common convention.
-    icon.textContent = getCurrentTheme() === 'dark' ? '☀' : '☽';
+  // Show the theme you'd switch TO, the usual convention for a theme button.
+  // The variation selector keeps these as glyphs rather than colour emoji,
+  // which would sit badly next to the pixel typeface.
+  const ICONS: Record<Theme, string> = {
+    dark: '☽︎',
+    light: '☀︎',
+    doom: '☠︎',
+  };
+
+  const button = document.getElementById('theme-toggle');
+  const icon = document.getElementById('theme-toggle-icon');
+
+  function sync() {
+    const next = nextTheme();
+    if (icon) icon.textContent = ICONS[next];
+    button?.setAttribute('aria-label', `Switch to ${next} theme`);
   }
 
-  document.getElementById('theme-toggle')?.addEventListener('click', () => {
-    toggleTheme();
-    syncIcon();
+  button?.addEventListener('click', () => {
+    cycleTheme();
+    sync();
   });
 
-  syncIcon();
+  sync();
 </script>

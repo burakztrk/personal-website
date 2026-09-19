@@ -1,4 +1,5 @@
 ---
+import DoomFace from './DoomFace.astro';
 import { withBase } from '../utils/url';
 
 interface Props {
@@ -14,6 +15,11 @@ const items = [
   { key: 'contact', label: 'CONTACT', href: withBase('/contact'), accent: 'is-error' },
 ] as const;
 
+// Split either side of the face, the way Doom's status bar brackets it
+// between the ARMS and ARMOR panels.
+const half = Math.ceil(items.length / 2);
+const groups = [items.slice(0, half), items.slice(half)];
+
 // `current` (Astro.url.pathname) is already base-prefixed, so comparisons
 // against the base-prefixed hrefs above stay correct either way.
 function isActive(href: string): boolean {
@@ -25,19 +31,30 @@ function isActive(href: string): boolean {
 <nav class="site-chrome" aria-label="Primary navigation">
   <div class="nav-bar">
     {
-      items.map((item) => {
-        const active = isActive(item.href);
-        return (
-          <a
-            href={item.href}
-            class={`nav-link nes-btn ${active ? item.accent : ''}`}
-            data-accent={item.accent}
-            aria-current={active ? 'page' : undefined}
-          >
-            {item.label}
-          </a>
-        );
-      })
+      groups.map((group, index) => (
+        <>
+          <div class="nav-group">
+            {group.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <a
+                  href={item.href}
+                  class={`nav-link nes-btn ${active ? item.accent : ''}`}
+                  data-accent={item.accent}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
+          </div>
+          {index === 0 && (
+            <div class="nav-face">
+              <DoomFace />
+            </div>
+          )}
+        </>
+      ))
     }
   </div>
 </nav>
@@ -49,16 +66,78 @@ function isActive(href: string): boolean {
     justify-content: center;
     gap: var(--space-4);
     flex-wrap: wrap;
-    padding: var(--space-3) var(--space-6);
+    padding: var(--space-3) var(--space-4);
     background: var(--surface);
     border: 4px solid var(--line);
     border-radius: 4px;
     box-sizing: border-box;
+    /* Stamped-metal lip, the thing that sells the row as a HUD panel rather
+       than a plain bar. Rendered as light-on-top/dark-underneath so it reads
+       the same way whichever theme is painting the surface. */
+    box-shadow:
+      inset 0 2px 0 rgb(255 255 255 / 7%),
+      inset 0 -3px 0 rgb(0 0 0 / 28%);
+  }
+
+  .nav-group {
+    display: flex;
+    align-items: center;
+    /* Spread across the half rather than huddling by the face, so the row
+       fills its width the way the game's panels do. */
+    justify-content: space-evenly;
+    gap: var(--space-4);
+    /* Equal shares regardless of how wide each side's labels are, which is
+       what keeps the face dead centre; max-content stops a side from
+       wrapping if its share is the tighter of the two. */
+    flex: 1 1 0;
+    min-width: max-content;
+  }
+
+  /* The face sits in a recessed centre panel bracketed by full-height
+     dividers, which is what makes the row read as Doom's status bar rather
+     than as a plain row of buttons. */
+  .nav-face {
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    flex-shrink: 0;
+    padding: var(--space-2) var(--space-5);
+    margin: calc(-1 * var(--space-3)) 0;
+    background: var(--ground);
+    border-left: 3px solid var(--line);
+    border-right: 3px solid var(--line);
+    box-shadow: inset 0 0 0 2px rgb(0 0 0 / 35%);
   }
 
   .nav-link {
     font-family: var(--font-display);
     font-size: 10px;
     text-decoration: none;
+  }
+
+  /* Below roughly 680px the four buttons plus the face stop fitting on one
+     line; let the face take the top row on its own instead of squeezing. */
+  @media (max-width: 680px) {
+    .nav-bar {
+      gap: var(--space-3);
+    }
+
+    /* Dissolve the two groups so all four buttons share one wrapping row
+       under the face, rather than each group claiming a row of its own. */
+    .nav-group {
+      display: contents;
+    }
+
+    .nav-face {
+      order: 1;
+      flex-basis: 100%;
+      justify-content: center;
+      margin: 0;
+      border: 3px solid var(--line);
+    }
+
+    .nav-link {
+      order: 2;
+    }
   }
 </style>
