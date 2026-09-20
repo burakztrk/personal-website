@@ -29,6 +29,8 @@ const accentClass = `is-${post.data.accent}`;
   <div class="panel">
     <span class="panel-title">blog/{post.id}.md</span>
 
+    <a href={withBase('/blog')} class="back-nav">← Blog</a>
+
     <h1>{post.data.title}</h1>
 
     <div class="meta-row">
@@ -56,6 +58,21 @@ const accentClass = `is-${post.data.accent}`;
 </BaseLayout>
 
 <style>
+  .back-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-display);
+    font-size: 9px;
+    color: var(--ink-dim);
+    text-decoration: none;
+    margin-bottom: var(--space-5);
+  }
+
+  .back-nav:hover {
+    color: var(--warning);
+  }
+
   .tag-badge {
     font-family: var(--font-display);
     font-size: 9px;

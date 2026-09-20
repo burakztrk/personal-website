@@ -1,0 +1,297 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../utils/url';
+
+const appHref = withBase('/apps/app-fastcurrency');
+
+const copy = {
+  en: {
+    title: 'Privacy Policy',
+    updated: 'Last updated: September 9, 2026',
+    intro:
+      'Fast Currency Converter ("the app") is a simple Android app that shows quick currency conversions. This page explains what data is processed when you use the app.',
+    blocks: [
+      {
+        heading: 'Data we collect',
+        body: [
+          'The app does not collect any personal data. There is no account creation, sign-in, or personal information entry of any kind.',
+          'Preferences such as your selected currency pair are stored only locally on your device and are never sent to any server.',
+        ],
+      },
+      {
+        heading: 'Network access',
+        body: [
+          'The app calls api.frankfurter.dev to fetch current exchange rates. These requests only include the currency codes being requested; no data that identifies you is sent.',
+        ],
+      },
+      {
+        heading: 'Ads, analytics and third parties',
+        body: [
+          'The app contains no ad network, no analytics SDK, no crash-reporting tool, and no tracking of any kind. Your data is never shared with or sold to third parties.',
+        ],
+      },
+      {
+        heading: 'Permissions',
+        body: ['The app requests only the INTERNET permission, used solely to fetch exchange rates from the server.'],
+      },
+      {
+        heading: 'Data storage and deletion',
+        body: [
+          'Your preferences stay on your device only. Uninstalling the app or clearing its app data removes this information completely.',
+        ],
+      },
+      {
+        heading: "Children's privacy",
+        body: ['The app does not knowingly collect personal data from children.'],
+      },
+      {
+        heading: 'Changes to this policy',
+        body: [
+          'This privacy policy may be updated from time to time. The current version is always published on this page.',
+        ],
+      },
+      {
+        heading: 'Contact',
+        body: ['contact:info@ozturk.ai'],
+      },
+    ],
+  },
+  tr: {
+    title: 'Gizlilik Politikası',
+    updated: 'Son güncelleme: 9 Eylül 2026',
+    intro:
+      'Fast Currency Converter ("uygulama"), döviz kurlarını hızlıca çevirmenizi sağlayan basit bir Android uygulamasıdır. Bu sayfa, uygulamayı kullanırken hangi verilerin nasıl işlendiğini açıklar.',
+    blocks: [
+      {
+        heading: 'Topladığımız veriler',
+        body: [
+          'Uygulama hiçbir kişisel veri toplamaz. Hesap oluşturma, giriş yapma veya kişisel bilgi girme gibi bir işlem yoktur.',
+          'Seçtiğiniz para birimi çifti gibi tercihler yalnızca cihazınızda, uygulamanın yerel deposunda saklanır ve hiçbir sunucuya gönderilmez.',
+        ],
+      },
+      {
+        heading: 'Ağ bağlantısı',
+        body: [
+          'Uygulama, güncel döviz kurlarını almak için api.frankfurter.dev adresine istek gönderir. Bu isteklerde yalnızca hangi para birimlerinin kuru istendiği bilgisi yer alır; kimliğinizi belirleyen herhangi bir veri gönderilmez.',
+        ],
+      },
+      {
+        heading: 'Reklam, analiz ve üçüncü taraflar',
+        body: [
+          "Uygulamada reklam ağı, analiz (analytics) SDK'sı, çökme raporlama aracı veya herhangi bir izleme (tracking) mekanizması bulunmaz. Verileriniz hiçbir üçüncü tarafla paylaşılmaz veya satılmaz.",
+        ],
+      },
+      {
+        heading: 'İzinler',
+        body: ['Uygulama yalnızca İnternet (INTERNET) iznini kullanır; bu izin sadece döviz kurlarını sunucudan almak için gereklidir.'],
+      },
+      {
+        heading: 'Verilerin saklanması ve silinmesi',
+        body: [
+          'Tercihleriniz yalnızca cihazınızda tutulur. Uygulamayı kaldırdığınızda veya uygulama verilerini temizlediğinizde bu bilgiler tamamen silinir.',
+        ],
+      },
+      {
+        heading: 'Çocukların gizliliği',
+        body: ['Uygulama, bilerek çocuklardan herhangi bir kişisel veri toplamaz.'],
+      },
+      {
+        heading: 'Bu politikadaki değişiklikler',
+        body: ['Bu gizlilik politikası zaman zaman güncellenebilir. Güncel sürüm her zaman bu sayfada yayınlanır.'],
+      },
+      {
+        heading: 'İletişim',
+        body: ['contact:info@ozturk.ai'],
+      },
+    ],
+  },
+};
+---
+
+<BaseLayout
+  title="Fast Currency Converter — Privacy Policy"
+  description="Privacy policy for the Fast Currency Converter Android app."
+>
+  <div class="panel">
+    <span class="panel-title">apps/app-fastcurrency-privacy-policy</span>
+
+    <a href={appHref} class="back-nav">← Fast Currency Converter</a>
+
+    <div class="lang-switch">
+      <button type="button" class="nes-btn is-primary lang-btn" id="lang-en" aria-pressed="true"
+        >EN</button
+      >
+      <button type="button" class="nes-btn lang-btn" id="lang-tr" aria-pressed="false">TR</button>
+    </div>
+
+    <h1 data-i18n-en={copy.en.title} data-i18n-tr={copy.tr.title}>{copy.en.title}</h1>
+    <p class="dim updated-line" data-i18n-en={copy.en.updated} data-i18n-tr={copy.tr.updated}>
+      {copy.en.updated}
+    </p>
+
+    <p class="body-copy intro" data-i18n-en={copy.en.intro} data-i18n-tr={copy.tr.intro}>
+      {copy.en.intro}
+    </p>
+
+    <div class="policy-body">
+      {
+        copy.en.blocks.map((block, index) => (
+          <div class="divider-row policy-block">
+            <div class="policy-block-inner">
+              <h2 data-i18n-en={block.heading} data-i18n-tr={copy.tr.blocks[index].heading}>
+                {block.heading}
+              </h2>
+              {block.body.map((paragraph, pIndex) =>
+                paragraph.startsWith('contact:') ? (
+                  <p class="body-copy">
+                    <span data-i18n-en="Questions: " data-i18n-tr="Sorularınız için: ">
+                      Questions:{' '}
+                    </span>
+                    <a
+                      class="contact-mail"
+                      href={`mailto:${paragraph.slice('contact:'.length)}`}
+                      data-i18n-en={copy.en.blocks[index].body[pIndex].slice('contact:'.length)}
+                      data-i18n-tr={copy.tr.blocks[index].body[pIndex].slice('contact:'.length)}
+                      data-mailto-en={`mailto:${copy.en.blocks[index].body[pIndex].slice('contact:'.length)}`}
+                      data-mailto-tr={`mailto:${copy.tr.blocks[index].body[pIndex].slice('contact:'.length)}`}
+                    >
+                      {paragraph.slice('contact:'.length)}
+                    </a>
+                  </p>
+                ) : (
+                  <p
+                    class="body-copy"
+                    data-i18n-en={paragraph}
+                    data-i18n-tr={copy.tr.blocks[index].body[pIndex]}
+                  >
+                    {paragraph}
+                  </p>
+                ),
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <script>
+      // Astro renders a page's own <script> after the layout's </html>, which
+      // browsers hoist into <body> but *after* <main> — outside the subtree
+      // src/scripts/transitions.ts swaps on a soft navigation. A script out
+      // there only ever runs if this exact page was hard-loaded at some
+      // point (unlike, say, index.astro's avatar cycler, which the entry
+      // page usually is). Nesting the script inside the slotted content
+      // here keeps it inside <main class="page">, so it's part of what a
+      // soft nav actually fetches and re-executes when arriving via an
+      // in-site link — the common way to reach this page (from the
+      // Privacy Policy tag on the app page) rather than a direct URL.
+      import { SOFT_NAV_EVENT } from '../../scripts/transitions';
+
+      const STORAGE_KEY = 'fcc-lang';
+
+      function initLangToggle() {
+        const btnEn = document.getElementById('lang-en');
+        const btnTr = document.getElementById('lang-tr');
+        if (!btnEn || !btnTr) return;
+
+        const nodes = document.querySelectorAll('[data-i18n-en]');
+
+        function apply(lang: string) {
+          const isEn = lang === 'en';
+          btnEn.setAttribute('aria-pressed', String(isEn));
+          btnTr.setAttribute('aria-pressed', String(!isEn));
+          btnEn.classList.toggle('is-primary', isEn);
+          btnTr.classList.toggle('is-primary', !isEn);
+
+          nodes.forEach((node) => {
+            const text = node.getAttribute(isEn ? 'data-i18n-en' : 'data-i18n-tr');
+            if (text !== null) node.textContent = text;
+
+            const mailto = node.getAttribute(isEn ? 'data-mailto-en' : 'data-mailto-tr');
+            if (mailto !== null) node.setAttribute('href', mailto);
+          });
+
+          document.documentElement.lang = lang;
+          try {
+            localStorage.setItem(STORAGE_KEY, lang);
+          } catch {
+            // storage unavailable — language just won't persist across visits
+          }
+        }
+
+        btnEn.addEventListener('click', () => apply('en'));
+        btnTr.addEventListener('click', () => apply('tr'));
+
+        let saved: string | null = null;
+        try {
+          saved = localStorage.getItem(STORAGE_KEY);
+        } catch {
+          // ignore
+        }
+        apply(saved === 'tr' ? 'tr' : 'en');
+      }
+
+      initLangToggle();
+      document.addEventListener(SOFT_NAV_EVENT, initLangToggle);
+    </script>
+  </div>
+</BaseLayout>
+
+<style>
+  .back-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-display);
+    font-size: 9px;
+    color: var(--ink-dim);
+    text-decoration: none;
+    margin-bottom: var(--space-5);
+  }
+
+  .back-nav:hover {
+    color: var(--warning);
+  }
+
+  .lang-switch {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .lang-btn {
+    font-family: var(--font-display);
+    font-size: 9px;
+    padding: 4px 8px;
+  }
+
+  .updated-line {
+    margin: var(--space-2) 0 0;
+    font-size: 14px;
+  }
+
+  .intro {
+    margin: var(--space-5) 0 var(--space-2);
+  }
+
+  .policy-body {
+    margin-bottom: var(--space-6);
+  }
+
+  .policy-block {
+    display: block;
+  }
+
+  .policy-block-inner h2 {
+    margin-bottom: var(--space-2);
+  }
+
+  .policy-block-inner p {
+    margin: 0 0 var(--space-2);
+  }
+
+  .policy-block-inner p:last-child {
+    margin-bottom: 0;
+  }
+</style>

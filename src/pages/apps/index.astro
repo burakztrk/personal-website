@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../utils/url';
+
+const apps = [
+  {
+    slug: 'app-fastcurrency',
+    name: 'Fast Currency Converter',
+    tagline: 'Round-amount currency conversion, at a glance — with a home-screen widget.',
+    icon: '/images/apps/fastcurrency/icon.webp',
+    accent: 'var(--warning)',
+  },
+];
+---
+
+<BaseLayout title="Apps" description="Android apps.">
+  <div class="panel">
+    <span class="panel-title">apps/</span>
+
+    <h1>APPS</h1>
+
+    <ul class="app-list">
+      {
+        apps.map((app) => (
+          <li class="divider-row app-row">
+            <a href={withBase(`/apps/${app.slug}`)} class="app-link">
+              <img src={withBase(app.icon)} alt="" class="app-icon" />
+              <span class="app-link-text">
+                <span class="app-name">{app.name}</span>
+                <span class="dim app-tagline">{app.tagline}</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .app-list {
+    list-style: none;
+    margin: var(--space-4) 0 0;
+    padding: 0;
+  }
+
+  .app-row {
+    justify-content: flex-start;
+  }
+
+  .app-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .app-link:hover .app-name {
+    color: var(--warning);
+  }
+
+  .app-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border: 3px solid var(--line);
+    border-radius: 4px;
+    background: var(--raised);
+  }
+
+  .app-link-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .app-name {
+    font-family: var(--font-body);
+    font-size: 19px;
+  }
+
+  .app-tagline {
+    font-size: 15px;
+  }
+</style>

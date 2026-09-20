@@ -35,6 +35,23 @@ interface FetchedPage {
   mainHTML: string;
   title: string;
   styles: string[];
+  scriptSrcs: string[];
+}
+
+// Module scripts already evaluated in this document, keyed by resolved URL.
+// Seeded lazily from whatever the very first (hard) page load already
+// carries, so that page is never re-injected on its own first soft nav.
+let loadedScripts: Set<string> | null = null;
+
+function getLoadedScripts(): Set<string> {
+  if (!loadedScripts) {
+    loadedScripts = new Set(
+      Array.from(document.querySelectorAll<HTMLScriptElement>('script[type="module"][src]')).map(
+        (el) => el.src,
+      ),
+    );
+  }
+  return loadedScripts;
 }
 
 async function fetchMainContent(url: string): Promise<FetchedPage | null> {
@@ -49,7 +66,17 @@ async function fetchMainContent(url: string): Promise<FetchedPage | null> {
     // plus every component used on that page) live in <head>, not <main>
     // — a soft nav that only swaps <main> would silently drop them.
     const styles = Array.from(doc.head.querySelectorAll('style')).map((el) => el.textContent ?? '');
-    return { mainHTML: main.innerHTML, title: doc.title, styles };
+    // A page's own interactive <script> (Astro renders it as a module with
+    // a src, placed inside <main> when written inside the page's own
+    // template) never runs via the innerHTML swap below — assigning
+    // innerHTML explicitly does not execute embedded <script> elements,
+    // by spec, regardless of where they sit in the fragment. Collecting
+    // the src here lets applyContent() inject a real <script> element
+    // instead, which the browser does fetch and evaluate.
+    const scriptSrcs = Array.from(
+      main.querySelectorAll<HTMLScriptElement>('script[type="module"][src]'),
+    ).map((el) => new URL(el.getAttribute('src') ?? '', url).href);
+    return { mainHTML: main.innerHTML, title: doc.title, styles, scriptSrcs };
   } catch {
     return null;
   }
@@ -108,6 +135,18 @@ async function performNavigation(url: string, direction: 'forward' | 'back'): Pr
     window.scrollTo(0, 0);
   };
 
+  const runPageScripts = () => {
+    const seen = getLoadedScripts();
+    for (const src of page.scriptSrcs) {
+      if (seen.has(src)) continue;
+      seen.add(src);
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = src;
+      document.body.appendChild(script);
+    }
+  };
+
   document.documentElement.dataset.transitionDirection = direction;
 
   if (supportsViewTransitions()) {
@@ -120,6 +159,12 @@ async function performNavigation(url: string, direction: 'forward' | 'back'): Pr
   } else {
     applyContent();
   }
+
+  // A script arriving at this page for the first time in this session binds
+  // itself directly (it has never run before, so there's no listener yet to
+  // rely on); a page already loaded earlier just gets its SOFT_NAV_EVENT
+  // listener below re-triggered against the freshly swapped DOM instead.
+  runPageScripts();
 
   // Chrome outside <main> never gets re-rendered by a soft nav, so anything
   // living there that wants to react to navigation (the header's Doom face)

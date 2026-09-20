@@ -9,6 +9,10 @@ const { Content } = await render(info);
 
 const career = (await getCollection('career')).sort((a, b) => a.data.order - b.data.order);
 
+const email = 'burak@ozturk.ai';
+const linkedinUrl = 'https://www.linkedin.com/in/burakztrk/';
+const githubUrl = 'https://github.com/burakztrk/';
+
 // avatar-frames.webp is one row of six square portraits, in the reading order
 // of the source sheet: the five the avatar cycles through, then the
 // glowing-eyed god mode one, which only a click reaches.
@@ -80,6 +84,19 @@ const tags = [
           </div>
         ))
       }
+    </div>
+
+    <h2>CONTACT</h2>
+    <div class="contact-row">
+      <a href={`mailto:${email}`} class="action-tag">
+        Mail me <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" class="action-tag">
+        LinkedIn <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="action-tag">
+        GitHub <span class="arrow" aria-hidden="true">→</span>
+      </a>
     </div>
   </div>
 </BaseLayout>
@@ -312,5 +329,42 @@ const tags = [
 
   .role-date {
     font-size: 16px;
+  }
+
+  .contact-row {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  /* Rounded pill with a real border — the opposite shape language from the
+     spiky cut-corner .tag badges above, so it reads as "goes somewhere"
+     rather than as another skill tag. */
+  .action-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-size: 10px;
+    padding: 8px 14px;
+    color: var(--ink);
+    background: var(--raised);
+    border: 3px solid var(--line);
+    border-radius: 999px;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      transform 0.12s ease,
+      background-color 0.12s ease;
+  }
+
+  .action-tag:hover {
+    background: var(--surface);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+  }
+
+  .action-tag .arrow {
+    font-size: 12px;
   }
 </style>

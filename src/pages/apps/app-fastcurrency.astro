@@ -1,0 +1,288 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../utils/url';
+
+const appsHref = withBase('/apps');
+const privacyHref = withBase('/apps/app-fastcurrency-privacy-policy');
+
+const screenshots = Array.from(
+  { length: 7 },
+  (_, i) => `/images/apps/fastcurrency/screenshots/${i + 1}.webp`,
+);
+
+const features = [
+  {
+    emoji: '💱',
+    title: 'Live exchange rates',
+    body: 'Rates are fetched live from frankfurter.dev — no API key, no sign-up.',
+  },
+  {
+    emoji: '🔢',
+    title: 'Round-amount table',
+    body: 'A ready-made table across five tiers, 100 up to 1M, ten rows each — no manual math needed.',
+  },
+  {
+    emoji: '🏠',
+    title: 'Home-screen widget',
+    body: 'See current rates without opening the app; the widget shares the same data as the app.',
+  },
+  {
+    emoji: '🔄',
+    title: 'Swap direction in one tap',
+    body: 'Pick your currency pair, flip the direction with a single tap.',
+  },
+  {
+    emoji: '🌍',
+    title: 'Every currency',
+    body: 'Choose from every currency the Frankfurter API supports.',
+  },
+  {
+    emoji: '🔒',
+    title: 'No ads, no tracking',
+    body: 'No analytics or ad SDKs; your preferences stay on your device.',
+  },
+];
+---
+
+<BaseLayout
+  title="Fast Currency Converter"
+  description="Güncel döviz kurlarıyla yuvarlak tutarları tek bakışta gösteren Android uygulaması ve ana ekran widget'ı."
+>
+  <div class="panel">
+    <span class="panel-title">apps/app-fastcurrency</span>
+
+    <a href={appsHref} class="back-nav">← Apps</a>
+
+    <div class="app-hero">
+      <img
+        src={withBase('/images/apps/fastcurrency/icon.webp')}
+        alt="Fast Currency Converter icon"
+        class="app-icon"
+      />
+      <div>
+        <h1>FAST CURRENCY CONVERTER</h1>
+        <p class="body-copy dim tagline">
+          See round amounts convert at today's rate, at a glance — in the app and on the
+          home-screen widget.
+        </p>
+      </div>
+    </div>
+
+    <div class="tag-row action-tags">
+      <span class="action-tag is-soon">Google Play — Coming soon</span>
+      <a href={privacyHref} class="action-tag">
+        Privacy Policy <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="tag-row info-tags">
+      <span class="tag" style="--tag: var(--success)">📱 Home-screen widget</span>
+      <span class="tag" style="--tag: var(--error)">🚫 No ads, no tracking</span>
+    </div>
+
+    <div class="screenshot-gallery">
+      {
+        screenshots.map((src) => (
+          <div class="screenshot-frame">
+            <img src={withBase(src)} alt="Fast Currency Converter screenshot" loading="lazy" />
+          </div>
+        ))
+      }
+    </div>
+
+    <h2>WHAT IT DOES</h2>
+    <div class="feature-grid">
+      {
+        features.map((feature) => (
+          <div class="feature-card">
+            <span class="emoji">{feature.emoji}</span>
+            <h3>{feature.title}</h3>
+            <p class="dim">{feature.body}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="dim footer-line">Fast Currency Converter — com.booapps.fastcurrencyconverter</p>
+  </div>
+</BaseLayout>
+
+<style>
+  .back-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-display);
+    font-size: 9px;
+    color: var(--ink-dim);
+    text-decoration: none;
+    margin-bottom: var(--space-5);
+  }
+
+  .back-nav:hover {
+    color: var(--warning);
+  }
+
+  .app-hero {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    margin: var(--space-4) 0 var(--space-6);
+  }
+
+  .app-icon {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    border: 4px solid var(--line);
+    border-radius: 4px;
+    background: var(--raised);
+  }
+
+  .tagline {
+    margin: var(--space-2) 0 0;
+    max-width: 46ch;
+  }
+
+  @media (max-width: 560px) {
+    .app-hero {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  .tag-row {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .action-tags {
+    margin-bottom: var(--space-3);
+  }
+
+  .info-tags {
+    margin-bottom: var(--space-6);
+  }
+
+  /* Status pills: small, spiky pixel-cut badges — informational only,
+     nothing to click. */
+  .tag {
+    font-family: var(--font-display);
+    font-size: 9px;
+    line-height: 1;
+    padding: 5px 7px;
+    color: var(--accent-ink);
+    background: var(--tag);
+    box-shadow:
+      0 3px var(--tag),
+      0 -3px var(--tag),
+      3px 0 var(--tag),
+      -3px 0 var(--tag);
+  }
+
+  /* Navigational chips: rounded pills with a real border, the opposite
+     shape language from the spiky .tag pills above — on sight, "this one
+     goes somewhere" vs. "this one is just a label". */
+  .action-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-size: 10px;
+    padding: 8px 14px;
+    color: var(--ink);
+    background: var(--raised);
+    border: 3px solid var(--line);
+    border-radius: 999px;
+    text-decoration: none;
+  }
+
+  a.action-tag {
+    cursor: pointer;
+    transition:
+      transform 0.12s ease,
+      background-color 0.12s ease;
+  }
+
+  a.action-tag:hover {
+    background: var(--surface);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+  }
+
+  .action-tag.is-soon {
+    opacity: 0.6;
+  }
+
+  .action-tag .arrow {
+    font-size: 12px;
+  }
+
+  .screenshot-gallery {
+    display: flex;
+    gap: var(--space-3);
+    margin: var(--space-4) 0 var(--space-6);
+    padding-bottom: var(--space-2);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .screenshot-frame {
+    flex: 0 0 auto;
+    width: 160px;
+    padding: var(--space-2);
+    background: var(--raised);
+    border: 4px solid var(--line);
+    border-radius: 4px;
+    scroll-snap-align: start;
+  }
+
+  .screenshot-frame img {
+    display: block;
+    width: 100%;
+    border-radius: 2px;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+    margin: var(--space-4) 0 var(--space-6);
+  }
+
+  @media (max-width: 560px) {
+    .feature-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .feature-card {
+    background: var(--raised);
+    border: 2px solid var(--line);
+    border-radius: 4px;
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .feature-card .emoji {
+    font-size: 22px;
+    display: block;
+    margin-bottom: var(--space-2);
+  }
+
+  .feature-card h3 {
+    font-size: 12px;
+    margin: 0 0 var(--space-2);
+  }
+
+  .feature-card p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .footer-line {
+    margin: 0;
+    font-size: 15px;
+  }
+</style>
