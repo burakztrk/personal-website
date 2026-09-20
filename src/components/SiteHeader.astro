@@ -36,6 +36,13 @@ import { withBase } from '../utils/url';
     background-clip: text;
     color: transparent;
     filter: drop-shadow(3px 3px 0 var(--line));
+    /* AmazDoomLeft has almost no descender, so its ink sits well above the
+       line box's geometric center no matter what line-height says (the
+       offset comes from the font's own ascent/descent split, which
+       line-height can't rebalance). Nudge it down by eye so it lines up
+       with the theme-toggle button next to it instead of floating above
+       it. Expressed in em so it scales with the mobile font-size too. */
+    transform: translateY(0.1em);
   }
 
   @media (max-width: 420px) {
