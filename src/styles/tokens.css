@@ -34,6 +34,15 @@
      not of the surrounding surface. */
   --screen: #12141a;
 
+  /* Wordmark gradient (steel top -> molten gold bottom), the same two-tone
+     split the 1993 DOOM logo uses. Unlike the badge accents above, these
+     *do* shift per theme — the logotype is meant to visibly react when you
+     cycle themes, not stay fixed. --line doubles as the bevel/shadow color
+     for the same reason it already borders every panel: it's the one token
+     each theme already tunes for "the edge of a raised thing". */
+  --brand-top: #93a4c0;
+  --brand-bottom: #cc9a66;
+
   --font-display: 'Press Start 2P', monospace;
   --font-body: 'DotGothic16', monospace;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -57,6 +66,11 @@
   --ink: #12141a;
   --ink-dim: #5a626b;
   --line: #21252b;
+
+  /* Pulled a step darker than the dark-theme pair so the gradient still
+     clears WCAG-ish contrast against a near-white ground. */
+  --brand-top: #5b6f8c;
+  --brand-bottom: #a8743f;
 }
 
 /* Doom: the 1993 status bar's palette — gunmetal browns, bone text and a
@@ -69,4 +83,9 @@
   --ink: #e8dcc6;
   --ink-dim: #a08e76;
   --line: #7a4a33;
+
+  /* The theme the wordmark is actually cosplaying, so the gradient gets to
+     be the most saturated of the three — HUD steel into molten gold. */
+  --brand-top: #6f93c4;
+  --brand-bottom: #e0a542;
 }

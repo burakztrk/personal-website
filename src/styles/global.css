@@ -1,6 +1,17 @@
 @import 'nes.css/css/nes.min.css';
 @import './tokens.css';
 
+/* Self-hosted rather than pulled from Google Fonts like the other two
+   typefaces (see BaseLayout.astro) because it isn't on Google Fonts.
+   AmazDoomLeft by Amazingmax — https://www.dafont.com/amazdoom.font —
+   licensed CC BY-NC 3.0 (non-commercial use, attribution required); this
+   comment is that attribution. Used only for the site wordmark. */
+@font-face {
+  font-family: 'AmazDoomLeft';
+  src: url('/fonts/AmazDoomLeft.ttf') format('truetype');
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {
@@ -73,15 +84,18 @@ textarea:focus-visible {
   max-width: 1040px;
   margin: 0 auto;
   padding: var(--space-10) var(--space-4) var(--space-12);
+  /* The nav bar docks fixed to the bottom of the screen at every viewport
+     width (see NavBar.astro) instead of sitting in flow under the header,
+     so the page needs enough of its own bottom padding that scrolling to
+     the end of the content doesn't tuck the last few lines behind it. */
+  padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
 }
 
-/* Below 680px the nav bar docks fixed to the bottom of the screen (see
-   NavBar.astro) instead of sitting in flow under the header, so the page
-   needs enough of its own bottom padding that scrolling to the end of the
-   content doesn't tuck the last few lines behind it. */
+/* Below 680px the nav groups stack into two rows instead of one, so the
+   bar is taller and needs more bottom clearance. */
 @media (max-width: 680px) {
   .page {
     padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));

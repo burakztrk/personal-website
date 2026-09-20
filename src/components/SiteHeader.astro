@@ -4,7 +4,7 @@ import { withBase } from '../utils/url';
 ---
 
 <header class="site-chrome site-header">
-  <a href={withBase('/')} class="brand">ozturk<span class="brand-dot">.</span>ai</a>
+  <a href={withBase('/')} class="brand">ozturk.ai</a>
 
   <div class="site-header-actions">
     <ThemeToggle />
@@ -19,15 +19,29 @@ import { withBase } from '../utils/url';
     gap: var(--space-4);
   }
 
+  /* The DOOM-logo two-tone: a vertical steel-to-gold gradient clipped to
+     the glyphs, lifted off the page with a flat drop-shadow standing in for
+     the real logo's bevel (the font's own chunky, angled letterforms carry
+     most of that read already). --brand-top/--brand-bottom and --line
+     shift per theme (see tokens.css), so the whole mark re-colors live
+     when the theme toggle cycles instead of being a fixed image. */
   .brand {
-    font-family: var(--font-display);
-    font-size: 16px;
-    color: var(--ink);
+    font-family: 'AmazDoomLeft', var(--font-display);
+    font-size: 60px;
+    line-height: 1;
+    letter-spacing: 1px;
     text-decoration: none;
+    background: linear-gradient(180deg, var(--brand-top) 0%, var(--brand-bottom) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(3px 3px 0 var(--line));
   }
 
-  .brand-dot {
-    color: var(--warning);
+  @media (max-width: 420px) {
+    .brand {
+      font-size: 44px;
+    }
   }
 
   .site-header-actions {

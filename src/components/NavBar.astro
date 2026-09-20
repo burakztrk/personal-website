@@ -60,6 +60,23 @@ function isActive(href: string): boolean {
 </nav>
 
 <style>
+  /* The bar docks fixed to the bottom of the screen at every viewport width
+     (within thumb's reach on phones, within eye's reach on desktop) rather
+     than sitting in flow under the header, where scrolling carries it out
+     of view. Capped to the page's own max-width so it doesn't stretch
+     edge-to-edge on wide viewports. */
+  nav.site-chrome {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+    z-index: 40;
+    margin: 0;
+    padding: 0;
+    width: calc(100% - var(--space-6));
+    max-width: 1040px;
+  }
+
   .nav-bar {
     display: flex;
     align-items: center;
@@ -76,10 +93,14 @@ function isActive(href: string): boolean {
     box-sizing: border-box;
     /* Stamped-metal lip, the thing that sells the row as a HUD panel rather
        than a plain bar. Rendered as light-on-top/dark-underneath so it reads
-       the same way whichever theme is painting the surface. */
+       the same way whichever theme is painting the surface. The bar floats
+       over page content at every width now, so it always carries its own
+       elevation shadow rather than relying on being visually "under" the
+       header. */
     box-shadow:
       inset 0 2px 0 rgb(255 255 255 / 7%),
-      inset 0 -3px 0 rgb(0 0 0 / 28%);
+      inset 0 -3px 0 rgb(0 0 0 / 28%),
+      0 6px 16px rgb(0 0 0 / 45%);
   }
 
   .nav-group {
@@ -134,32 +155,18 @@ function isActive(href: string): boolean {
 
   /* Below roughly 680px two buttons abreast stop fitting either side of the
      face. Stack each half instead, which keeps the face where it belongs —
-     in the middle of the buttons — rather than banished to its own row.
-     The bar itself also moves to a fixed dock at the bottom of the screen,
-     within thumb's reach, rather than sitting under the header where a
-     phone-sized viewport has already scrolled it out of view. */
+     in the middle of the buttons — rather than banished to its own row. */
   @media (max-width: 680px) {
     nav.site-chrome {
-      position: fixed;
       left: var(--space-3);
       right: var(--space-3);
-      bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
-      z-index: 40;
-      margin: 0;
-      padding: 0;
-      max-width: none;
+      transform: none;
+      width: auto;
     }
 
     .nav-bar {
       gap: var(--space-3);
       padding: var(--space-3);
-      /* The bar now floats over page content instead of sitting in normal
-         flow, so it needs its own elevation shadow instead of relying on
-         being visually "under" the header. */
-      box-shadow:
-        inset 0 2px 0 rgb(255 255 255 / 7%),
-        inset 0 -3px 0 rgb(0 0 0 / 28%),
-        0 6px 16px rgb(0 0 0 / 45%);
     }
 
     .nav-group {
