@@ -9,10 +9,8 @@ interface Props {
 const { current } = Astro.props;
 
 const items = [
-  { key: 'info', label: 'INFO', href: withBase('/'), accent: 'is-error' },
   { key: 'blog', label: 'BLOG', href: withBase('/blog'), accent: 'is-warning' },
-  { key: 'career', label: 'CAREER', href: withBase('/career'), accent: 'is-success' },
-  { key: 'contact', label: 'CONTACT', href: withBase('/contact'), accent: 'is-primary' },
+  { key: 'apps', label: 'APPS', href: withBase('/apps'), accent: 'is-primary' },
 ] as const;
 
 // Split either side of the face, the way Doom's status bar brackets it
@@ -23,7 +21,6 @@ const groups = [items.slice(0, half), items.slice(half)];
 // `current` (Astro.url.pathname) is already base-prefixed, so comparisons
 // against the base-prefixed hrefs above stay correct either way.
 function isActive(href: string): boolean {
-  if (href === withBase('/')) return current === href;
   return current === href || current.startsWith(`${href}/`);
 }
 ---
@@ -49,8 +46,9 @@ function isActive(href: string): boolean {
             })}
           </div>
           {index === 0 && (
-            <a class="nav-face" href={withBase('/')} aria-label="Info">
+            <a class="nav-face" href={withBase('/')} aria-label="Home">
               <DoomFace />
+              <span class="nav-face-label">HOME</span>
             </a>
           )}
         </>
@@ -119,10 +117,16 @@ function isActive(href: string): boolean {
 
   /* The face sits in a recessed centre panel bracketed by full-height
      dividers, which is what makes the row read as Doom's status bar rather
-     than as a plain row of buttons. */
+     than as a plain row of buttons. Stacked in a column (face, then a HOME
+     caption) now that it's the only way back to Info/Home — the label is
+     what tells a first-time visitor the portrait is a button, not just
+     chrome. */
   .nav-face {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    gap: 2px;
     align-self: stretch;
     flex-shrink: 0;
     text-decoration: none;
@@ -134,6 +138,17 @@ function isActive(href: string): boolean {
     border-left: 3px solid var(--line);
     border-right: 3px solid var(--line);
     box-shadow: inset 0 0 0 2px rgb(0 0 0 / 35%);
+  }
+
+  .nav-face-label {
+    font-family: var(--font-display);
+    font-size: 8px;
+    color: var(--ink-dim);
+    letter-spacing: 0.5px;
+  }
+
+  .nav-face:hover .nav-face-label {
+    color: var(--warning);
   }
 
   /* nes.css sizes a badge to its own em width and spaces it with a margin;
