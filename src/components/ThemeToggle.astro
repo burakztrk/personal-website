@@ -58,9 +58,37 @@ const pixels = (rows: string[]) =>
 </button>
 
 <style>
+  /* nes.css hardcodes plain .nes-btn to a white background/#adafbc bevel
+     (see the .is-* overrides in global.css for the same problem on the
+     accent buttons), which stays put no matter the theme. Retint this one
+     specifically — it's the button that changes the theme, so it above
+     all shouldn't be the one thing that ignores it. */
   #theme-toggle {
     padding: 8px 10px;
     line-height: 0;
+    color: var(--ink);
+    background-color: var(--raised);
+  }
+
+  #theme-toggle:hover {
+    color: var(--ink);
+    background-color: var(--surface);
+  }
+
+  #theme-toggle::after {
+    box-shadow: inset -4px -4px color-mix(in srgb, var(--raised) 55%, black);
+  }
+
+  #theme-toggle:hover::after {
+    box-shadow: inset -6px -6px color-mix(in srgb, var(--raised) 55%, black);
+  }
+
+  #theme-toggle:active::after {
+    box-shadow: inset 4px 4px color-mix(in srgb, var(--raised) 55%, black);
+  }
+
+  #theme-toggle:focus {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--line) 30%, transparent);
   }
 
   .theme-icon {
