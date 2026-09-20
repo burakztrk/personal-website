@@ -16,15 +16,18 @@ const AVATAR_FRAMES = 6;
 const AVATAR_GOD = 5;
 
 // Doom 1993's own hues pulled up into pastels — army green, blue armour,
-// khaki, brick, bone, rust. Kept here rather than in tokens.css: they are
-// this one row's palette, not part of the site's theme system.
+// khaki, brick, bone, rust. Four of the six are the site's actual accent
+// palette (tokens.css --primary/--warning/--success/--error, also what the
+// nav badges and every nes-btn/nes-badge is-* now render in) referenced by
+// var() so the two stay in lockstep; COMPOSE and PROXMOX have no site-wide
+// slot and keep their own literal tone.
 const tags = [
-  { label: 'ANDROID', tone: '#a9bf93' },
-  { label: 'CI/CD', tone: '#93a4c0' },
+  { label: 'ANDROID', tone: 'var(--success)' },
+  { label: 'CI/CD', tone: 'var(--primary)' },
   { label: 'COMPOSE', tone: '#cbb089' },
-  { label: 'HOMELAB', tone: '#c98a7d' },
+  { label: 'HOMELAB', tone: 'var(--error)' },
   { label: 'PROXMOX', tone: '#ddd2b8' },
-  { label: 'LITELLM', tone: '#cc9a66' },
+  { label: 'LITELLM', tone: 'var(--warning)' },
 ];
 ---
 
@@ -294,7 +297,7 @@ const tags = [
     font-size: 9px;
     line-height: 1;
     padding: 5px 7px;
-    color: #1f1913;
+    color: var(--accent-ink);
     background: var(--tag);
     box-shadow:
       0 3px var(--tag),

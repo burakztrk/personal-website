@@ -78,6 +78,16 @@ textarea:focus-visible {
   gap: var(--space-6);
 }
 
+/* Below 680px the nav bar docks fixed to the bottom of the screen (see
+   NavBar.astro) instead of sitting in flow under the header, so the page
+   needs enough of its own bottom padding that scrolling to the end of the
+   content doesn't tuck the last few lines behind it. */
+@media (max-width: 680px) {
+  .page {
+    padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 .body-copy {
   font-family: var(--font-body);
   font-size: 19px;
@@ -123,11 +133,110 @@ pre {
   color: #212529;
 }
 
+/* nes.css hardcodes its is-primary/is-success/is-warning/is-error colors
+   rather than reading them from variables, so retinting the button and
+   badge accents to the site's own palette (tokens.css) means overriding
+   each rule that names a literal color — including the pixel-shading
+   ::after pseudo-element and the badge's plus-shaped box-shadow, both of
+   which repeat that literal rather than deriving it from the background.
+   nes.css text on these is white; every one of the new tones is light
+   enough that white fails contrast, so text flips to --accent-ink instead. */
+.nes-btn.is-primary,
+.nes-btn.is-success,
+.nes-btn.is-error,
+.nes-badge span.is-primary,
+.nes-badge span.is-success,
+.nes-badge span.is-error {
+  color: var(--accent-ink);
+}
+
+.nes-btn.is-primary,
+.nes-btn.is-primary:hover {
+  background-color: var(--primary);
+}
+.nes-btn.is-success,
+.nes-btn.is-success:hover {
+  background-color: var(--success);
+}
+.nes-btn.is-warning,
+.nes-btn.is-warning:hover {
+  background-color: var(--warning);
+}
+.nes-btn.is-error,
+.nes-btn.is-error:hover {
+  background-color: var(--error);
+}
+
+.nes-btn.is-primary::after,
+.nes-btn.is-primary:hover::after,
+.nes-btn.is-primary:active:not(.is-disabled)::after {
+  box-shadow: inset -4px -4px color-mix(in srgb, var(--primary) 55%, black);
+}
+.nes-btn.is-success::after,
+.nes-btn.is-success:hover::after,
+.nes-btn.is-success:active:not(.is-disabled)::after {
+  box-shadow: inset -4px -4px color-mix(in srgb, var(--success) 55%, black);
+}
+.nes-btn.is-warning::after,
+.nes-btn.is-warning:hover::after,
+.nes-btn.is-warning:active:not(.is-disabled)::after {
+  box-shadow: inset -4px -4px color-mix(in srgb, var(--warning) 55%, black);
+}
+.nes-btn.is-error::after,
+.nes-btn.is-error:hover::after,
+.nes-btn.is-error:active:not(.is-disabled)::after {
+  box-shadow: inset -4px -4px color-mix(in srgb, var(--error) 55%, black);
+}
+
+.nes-btn.is-primary:focus {
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--primary) 30%, transparent);
+}
+.nes-btn.is-success:focus {
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--success) 30%, transparent);
+}
+.nes-btn.is-warning:focus {
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--warning) 30%, transparent);
+}
+.nes-btn.is-error:focus {
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--error) 30%, transparent);
+}
+
+.nes-badge span.is-primary:first-child {
+  background-color: var(--primary);
+  box-shadow:
+    0 0.5em var(--primary),
+    0 -0.5em var(--primary),
+    0.5em 0 var(--primary),
+    -0.5em 0 var(--primary);
+}
+.nes-badge span.is-success:first-child {
+  background-color: var(--success);
+  box-shadow:
+    0 0.5em var(--success),
+    0 -0.5em var(--success),
+    0.5em 0 var(--success),
+    -0.5em 0 var(--success);
+}
+.nes-badge span.is-warning:first-child {
+  background-color: var(--warning);
+  box-shadow:
+    0 0.5em var(--warning),
+    0 -0.5em var(--warning),
+    0.5em 0 var(--warning),
+    -0.5em 0 var(--warning);
+}
+.nes-badge span.is-error:first-child {
+  background-color: var(--error);
+  box-shadow:
+    0 0.5em var(--error),
+    0 -0.5em var(--error),
+    0.5em 0 var(--error),
+    -0.5em 0 var(--error);
+}
+
 /* A theme-reactive stand-in for nes.css's .nes-container.with-title —
    nes.css's own container colors are hardcoded (is-dark ignores our
-   tokens), so panels that must flip with the theme use this instead.
-   Small atomic controls (nes-btn, nes-badge, nes-input…) still use real
-   nes.css classes, since their accent colors already equal our tokens. */
+   tokens), so panels that must flip with the theme use this instead. */
 .panel {
   position: relative;
   box-sizing: border-box;
