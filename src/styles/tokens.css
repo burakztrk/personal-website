@@ -1,8 +1,16 @@
 /* Design tokens — dark is the default theme, light is an override set via
    [data-theme="light"] on <html> (see src/scripts/theme.ts). Accent colors
-   are identical in both themes and intentionally equal to NES.css's own
-   is-primary/is-success/is-warning/is-error colors, so no accent override
-   is needed anywhere else in the codebase. */
+   are identical in both themes and pull from the same Doom-1993-pastel
+   palette as the info page's skill tags (CI/CD, LITELLM, ANDROID, HOMELAB —
+   see src/pages/index.astro's `tags` array for the two not used as a site
+   accent, COMPOSE and PROXMOX). Unlike the old NES.css defaults these are
+   *not* equal to nes.css's own is-primary/is-success/is-warning/is-error
+   colors, which are hardcoded into that stylesheet rather than read from
+   variables — global.css carries the overrides that retint those classes
+   to match. --accent-ink is the readable text color for all four: they're
+   light pastels, and nes.css's default white badge/button text fails
+   contrast on them (a straight WCAG check put white under 3:1 on every one,
+   dark text over 6:1). */
 
 :root {
   --ground: #12141a;
@@ -12,10 +20,11 @@
   --ink-dim: #aeb6bf;
   --line: #4a515a;
 
-  --primary: #209cee;
-  --warning: #f7d51d;
-  --success: #92cc41;
-  --error: #e76e55;
+  --primary: #93a4c0;
+  --warning: #cc9a66;
+  --success: #a9bf93;
+  --error: #c98a7d;
+  --accent-ink: #1f1913;
 
   --capsule-top: #f2f0e4;
   --capsule-base: #e05a47;
