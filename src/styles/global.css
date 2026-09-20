@@ -78,6 +78,16 @@ textarea:focus-visible {
   gap: var(--space-6);
 }
 
+/* Below 680px the nav bar docks fixed to the bottom of the screen (see
+   NavBar.astro) instead of sitting in flow under the header, so the page
+   needs enough of its own bottom padding that scrolling to the end of the
+   content doesn't tuck the last few lines behind it. */
+@media (max-width: 680px) {
+  .page {
+    padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 .body-copy {
   font-family: var(--font-body);
   font-size: 19px;

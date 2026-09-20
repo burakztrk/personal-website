@@ -134,11 +134,32 @@ function isActive(href: string): boolean {
 
   /* Below roughly 680px two buttons abreast stop fitting either side of the
      face. Stack each half instead, which keeps the face where it belongs —
-     in the middle of the buttons — rather than banished to its own row. */
+     in the middle of the buttons — rather than banished to its own row.
+     The bar itself also moves to a fixed dock at the bottom of the screen,
+     within thumb's reach, rather than sitting under the header where a
+     phone-sized viewport has already scrolled it out of view. */
   @media (max-width: 680px) {
+    nav.site-chrome {
+      position: fixed;
+      left: var(--space-3);
+      right: var(--space-3);
+      bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+      z-index: 40;
+      margin: 0;
+      padding: 0;
+      max-width: none;
+    }
+
     .nav-bar {
       gap: var(--space-3);
       padding: var(--space-3);
+      /* The bar now floats over page content instead of sitting in normal
+         flow, so it needs its own elevation shadow instead of relying on
+         being visually "under" the header. */
+      box-shadow:
+        inset 0 2px 0 rgb(255 255 255 / 7%),
+        inset 0 -3px 0 rgb(0 0 0 / 28%),
+        0 6px 16px rgb(0 0 0 / 45%);
     }
 
     .nav-group {
