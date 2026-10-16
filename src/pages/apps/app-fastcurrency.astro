@@ -4,6 +4,8 @@ import { withBase } from '../../utils/url';
 
 const appsHref = withBase('/apps');
 const privacyHref = withBase('/apps/app-fastcurrency-privacy-policy');
+const playHref =
+  'https://play.google.com/store/apps/details?id=com.booapps.fastcurrencyconverter';
 
 const screenshots = Array.from(
   { length: 7 },
@@ -69,7 +71,9 @@ const features = [
     </div>
 
     <div class="tag-row action-tags">
-      <span class="action-tag is-soon">Google Play — Coming soon</span>
+      <a href={playHref} class="action-tag" target="_blank" rel="noopener noreferrer">
+        Get it on Google Play <span class="arrow" aria-hidden="true">→</span>
+      </a>
       <a href={privacyHref} class="action-tag">
         Privacy Policy <span class="arrow" aria-hidden="true">→</span>
       </a>
