@@ -12,6 +12,7 @@ interface Props {
 
 const { title, description = "ozturk.ai — Burak Ozturk's personal site." } = Astro.props;
 const pathname = Astro.url.pathname;
+const canonicalUrl = new URL(pathname, Astro.site).href;
 ---
 
 <!doctype html>
@@ -20,6 +21,7 @@ const pathname = Astro.url.pathname;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/gif" href={withBase('/favicon.gif')} />
     <link rel="alternate icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <title>{title} · ozturk.ai</title>
